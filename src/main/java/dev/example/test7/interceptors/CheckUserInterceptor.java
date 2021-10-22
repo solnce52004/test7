@@ -22,7 +22,10 @@ public class CheckUserInterceptor implements HandlerInterceptor {
 
             final UserDTO user = (UserDTO) mav.getModel().get("user");
 
-            if (user == null || !user.getIsAdmin()) {
+            if (user != null &&
+                    user.getName().length() > 0 &&
+                    !user.isAdmin()
+            ) {
                 response.sendRedirect(request.getContextPath() + Routes.ROUTE_FAILED);
             }
         }
