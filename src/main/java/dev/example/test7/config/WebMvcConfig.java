@@ -5,12 +5,16 @@ import org.springframework.context.MessageSource;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.support.ReloadableResourceBundleMessageSource;
+import org.springframework.http.MediaType;
+import org.springframework.http.converter.HttpMessageConverter;
+import org.springframework.http.converter.ResourceHttpMessageConverter;
 import org.springframework.web.servlet.LocaleResolver;
 import org.springframework.web.servlet.config.annotation.InterceptorRegistry;
 import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
 import org.springframework.web.servlet.i18n.CookieLocaleResolver;
 import org.springframework.web.servlet.i18n.LocaleChangeInterceptor;
 
+import java.util.List;
 import java.util.Locale;
 
 @Configuration
@@ -46,5 +50,21 @@ public class WebMvcConfig implements WebMvcConfigurer {
         final LocaleChangeInterceptor lci = new LocaleChangeInterceptor();
         lci.setParamName("lang");//если перехватываем все и принудительно устанавливаем
         return lci;
+    }
+
+    @Override
+    public void configureMessageConverters(List<HttpMessageConverter<?>> converters) {
+//        converters.add(stringConverter());
+//        converters.add(mappingJackson2HttpMessageConverter());
+        converters.add(excelConverter());
+    }
+
+    @Bean
+    public ResourceHttpMessageConverter excelConverter() {
+        final ResourceHttpMessageConverter converter = new ResourceHttpMessageConverter();
+        converter.setSupportedMediaTypes(
+                List.of(new MediaType("application", "vnd.ms-excel"))
+        );
+        return converter;
     }
 }
