@@ -1,4 +1,4 @@
-package dev.example.test7.controllers;
+package dev.example.test7.controllers.http;
 
 import dev.example.test7.dto.UserDTO;
 import dev.example.test7.routes.Routes;
@@ -58,38 +58,21 @@ public class HomeController {
             BindingResult bindingResult,
             RedirectAttributes redirectAttributes
     ) {
-        final ModelAndView mav = new ModelAndView();
+        String view = Routes.VIEW_HOME;
 
         if (bindingResult.hasErrors()) {
-            final RedirectView redirectView = new RedirectView(Routes.VIEW_LOGIN);
-            redirectView.setStatusCode(HttpStatus.MOVED_PERMANENTLY);
-            mav.setView(redirectView);
-
-            redirectAttributes.addFlashAttribute("user", user);
+            view = Routes.VIEW_LOGIN;
             redirectAttributes.addFlashAttribute("org.springframework.validation.BindingResult.user", bindingResult);
-        } else {
-            final RedirectView redirectView = new RedirectView(Routes.VIEW_HOME);
-            redirectView.setStatusCode(HttpStatus.MOVED_PERMANENTLY);
-            mav.setView(redirectView);
         }
+
+        redirectAttributes.addFlashAttribute("user", user);
+
+        final RedirectView redirectView = new RedirectView(view);
+        redirectView.setStatusCode(HttpStatus.MOVED_PERMANENTLY);
+
+        final ModelAndView mav = new ModelAndView();
+        mav.setView(redirectView);
+
         return mav;
-    }
-
-
-    @GetMapping(value = "/get-user/{id}", produces = "application/json")
-    @ResponseBody
-    public UserDTO getUserById(@Valid @PathVariable String id) {
-        return new UserDTO(id, "1231232132");
-    }
-
-    @GetMapping(value = "/get-user-by-name", produces = "application/json")
-    @ResponseBody
-    public UserDTO getUserByName(@Valid @RequestParam("name") String name) {
-        return new UserDTO(name, "1231232132");
-    }
-
-    @PostMapping(value = "/set-user", consumes = "application/json")
-    public ResponseEntity<UserDTO> setUser(@Valid @RequestBody UserDTO user) {
-        return new ResponseEntity<>(HttpStatus.ACCEPTED);
     }
 }
