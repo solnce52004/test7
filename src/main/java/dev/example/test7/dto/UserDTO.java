@@ -6,7 +6,6 @@ import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.Size;
 import java.io.Serializable;
 
-@AllArgsConstructor
 @NoArgsConstructor
 @Data
 public class UserDTO implements Serializable {
@@ -31,6 +30,16 @@ public class UserDTO implements Serializable {
     ) {
         this.name = name;
         this.password = password;
+    }
+
+    public UserDTO(
+            @NotBlank(message = ERROR_MSG_EMPTY_VALUE) String name,
+            @NotBlank(message = ERROR_MSG_EMPTY_VALUE) @Size(min = 2, max = 8, message = ERROR_MSG_NOT_VALID) String password,
+            Boolean isRememberMe
+    ) {
+        this.name = name;
+        this.password = password;
+        this.isRememberMe = isRememberMe;
     }
 
     public boolean isAdmin() {

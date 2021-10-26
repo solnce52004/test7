@@ -4,12 +4,12 @@ import dev.example.test7.exceptions.custom_exceptions.ThereIsNoSuchUserException
 import dev.example.test7.exceptions.error_bodies.ErrorBody;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ExceptionHandler;
+import org.springframework.web.bind.annotation.RestControllerAdvice;
 
 import java.time.LocalDateTime;
 
-@ControllerAdvice
+@RestControllerAdvice
 public class ApiExceptionHandler {
     /**
      * Будет вызван конструктор переопредеенный в ThereIsNoSuchUserException
