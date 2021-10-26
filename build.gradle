@@ -44,11 +44,10 @@ dependencies {
 //    testImplementation 'org.springframework.batch:spring-batch-test'
 //    testImplementation 'org.springframework.security:spring-security-test'
 
-//    implementation 'javax.xml.bind:jaxb-api:2.4.0-b180830.0359'
-//    implementation 'org.glassfish.jaxb:jaxb-runtime:3.0.2'
-//    implementation 'com.sun.xml.bind:jaxb-impl:3.0.2'
-//    implementation group: 'com.fasterxml.jackson.module', name: 'jackson-module-jaxb-annotations'
-
+    //в classpath ничего добавлять не надо
+    implementation 'jakarta.xml.bind:jakarta.xml.bind-api:4.0.0-RC2'
+    implementation 'com.sun.xml.bind:jaxb-impl:3.0.2'
+    implementation 'jakarta.activation:jakarta.activation-api:2.1.0-RC1'
 }
 
 test {

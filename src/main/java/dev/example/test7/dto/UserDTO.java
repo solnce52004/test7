@@ -1,5 +1,6 @@
 package dev.example.test7.dto;
 
+import jakarta.xml.bind.annotation.XmlRootElement;
 import lombok.*;
 
 import javax.validation.constraints.NotBlank;
@@ -8,6 +9,7 @@ import java.io.Serializable;
 
 @NoArgsConstructor
 @Data
+@XmlRootElement
 public class UserDTO implements Serializable {
     private static final long serialVersionUID = 1L;
 

@@ -2,6 +2,9 @@ package dev.example.test7.controllers.api;
 
 import dev.example.test7.dto.UserDTO;
 import dev.example.test7.exceptions.custom_exceptions.ThereIsNoSuchUserException;
+import jakarta.xml.bind.JAXBContext;
+import jakarta.xml.bind.JAXBException;
+import jakarta.xml.bind.Marshaller;
 import lombok.extern.log4j.Log4j2;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.convert.ConversionService;
@@ -11,6 +14,8 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
+import java.awt.print.Book;
+import java.io.File;
 
 @RestController
 @RequestMapping("/api/v1")
@@ -100,19 +105,23 @@ public class HomeApiController {
     ///////
     @PostMapping(value = "/dep3/set-user")
     public ResponseEntity<UserDTO> setUserDep3(@RequestBody UserDTO user) {
-//        try {
-//            marshal(user);
-//        } catch (JAXBException e) {
-//            e.printStackTrace();
-//        }
+        try {
+            marshal(user);
+        } catch (JAXBException e) {
+            e.printStackTrace();
+        }
         return new ResponseEntity<>(HttpStatus.ACCEPTED);
     }
     ///////
 
-//    private void marshal(UserDTO user) throws JAXBException {
-//        JAXBContext context = JAXBContext.newInstance(Book.class);
-//        Marshaller mar= context.createMarshaller();
-//        mar.setProperty(Marshaller.JAXB_FORMATTED_OUTPUT, Boolean.TRUE);
-//        mar.marshal(user, new File("./book.xml"));
-//    }
+    private void marshal(UserDTO user) throws JAXBException {
+        JAXBContext context = JAXBContext.newInstance(UserDTO.class);
+        Marshaller mar= context.createMarshaller();
+
+        //для структурного отображения
+        mar.setProperty(Marshaller.JAXB_FORMATTED_OUTPUT, Boolean.TRUE);
+
+        mar.marshal(user, new File("./storage/user.xml"));
+        mar.marshal(user, System.out);
+    }
 }
