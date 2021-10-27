@@ -50,23 +50,23 @@ public class ExtendedResponseEntityExceptionHandler extends ResponseEntityExcept
             HttpStatus status,
             WebRequest request
     ) {
-        ErrorBody body = new ErrorBody();
-        body.setTimestamp(LocalDateTime.now());
-        body.setCustomMessage("(MethodArgumentNotValidException) дескриптор ошибки @Valid");
-//        body.setDebugMessage(ex.getMessage());
-        body.setStatus(status.value());
-        body.setStatusName(status.name());
-        body.setErrors(
-                new MapperErrorFieldsByMethodArgumentNotValid()
-                        .getErrors(ex)
-        );
+        ErrorBody body = new ErrorBody()
+                .setTimestamp(LocalDateTime.now())
+                .setCustomMessage("(MethodArgumentNotValidException) дескриптор ошибки @Valid")
+                .setDebugMessage(ex.getMessage())
+                .setStatus(status.value())
+                .setStatusName(status.name())
+                .setErrors(
+                        new MapperErrorFieldsByMethodArgumentNotValid()
+                                .getErrors(ex)
+                );
 
         return super.handleExceptionInternal(ex, body, headers, status, request);
     }
 
     /**
      * 405 METHOD_NOT_ALLOWED
-     *
+     * <p>
      * POST/GET
      */
     @Override
@@ -89,23 +89,24 @@ public class ExtendedResponseEntityExceptionHandler extends ResponseEntityExcept
             );
         }
 
-        ErrorBody body = new ErrorBody();
-        body.setTimestamp(LocalDateTime.now());
-        body.setCustomMessage(String.format(
-                CUSTOM_MSG_TEMPLATE_NOT_SUPPORTED,
-                "(HttpRequestMethodNotSupportedException) Type method",
-                allowed,
-                ex.getMethod()
-        ));
-        body.setStatus(status.value());
-        body.setStatusName(status.name());
+        ErrorBody body = new ErrorBody()
+                .setTimestamp(LocalDateTime.now())
+                .setCustomMessage(String.format(
+                        CUSTOM_MSG_TEMPLATE_NOT_SUPPORTED,
+                        "(HttpRequestMethodNotSupportedException) Type method",
+                        allowed,
+                        ex.getMethod()
+                ))
+                .setDebugMessage(ex.getMessage())
+                .setStatus(status.value())
+                .setStatusName(status.name());
 
         return super.handleExceptionInternal(ex, body, headers, status, request);
     }
 
     /**
      * 415 UNSUPPORTED_MEDIA_TYPE
-     *
+     * <p>
      * Content-Type
      */
     @Override
@@ -134,23 +135,24 @@ public class ExtendedResponseEntityExceptionHandler extends ResponseEntityExcept
             }
         }
 
-        ErrorBody body = new ErrorBody();
-        body.setTimestamp(LocalDateTime.now());
-        body.setCustomMessage(String.format(
-                CUSTOM_MSG_TEMPLATE_NOT_SUPPORTED,
-                "(HttpMediaTypeNotSupportedException) (Media) Content-Type",
-                allowed,
-                ex.getContentType()
-        ));
-        body.setStatus(status.value());
-        body.setStatusName(status.name());
+        ErrorBody body = new ErrorBody()
+                .setTimestamp(LocalDateTime.now())
+                .setCustomMessage(String.format(
+                        CUSTOM_MSG_TEMPLATE_NOT_SUPPORTED,
+                        "(HttpMediaTypeNotSupportedException) (Media) Content-Type",
+                        allowed,
+                        ex.getContentType()
+                ))
+                .setDebugMessage(ex.getMessage())
+                .setStatus(status.value())
+                .setStatusName(status.name());
 
         return super.handleExceptionInternal(ex, body, headers, status, request);
     }
 
     /**
      * 406 NOT_ACCEPTABLE
-     *
+     * <p>
      * Чтобы протестировать, необходимо указать в методе котроллера
      * produces = {MediaType.APPLICATION_XML_VALUE},
      * а в постмане Accept="application/json" (Content-Type="application/json")
@@ -176,23 +178,24 @@ public class ExtendedResponseEntityExceptionHandler extends ResponseEntityExcept
             );
         }
 
-        ErrorBody body = new ErrorBody();
-        body.setTimestamp(LocalDateTime.now());
-        body.setCustomMessage(String.format(
-                CUSTOM_MSG_TEMPLATE_NOT_SUPPORTED,
-                "(HttpMediaTypeNotAcceptableException) (Media) Acceptable MIME type",
-                allowed,
-                request.getHeader(HttpHeaders.ACCEPT)
-        ));
-        body.setStatus(status.value());
-        body.setStatusName(status.name());
+        ErrorBody body = new ErrorBody()
+                .setTimestamp(LocalDateTime.now())
+                .setCustomMessage(String.format(
+                        CUSTOM_MSG_TEMPLATE_NOT_SUPPORTED,
+                        "(HttpMediaTypeNotAcceptableException) (Media) Acceptable MIME type",
+                        allowed,
+                        request.getHeader(HttpHeaders.ACCEPT)
+                ))
+                .setDebugMessage(ex.getMessage())
+                .setStatus(status.value())
+                .setStatusName(status.name());
 
         return super.handleExceptionInternal(ex, body, headers, status, request);
     }
 
     /**
      * 500 INTERNAL_SERVER_ERROR
-     *
+     * <p>
      * Для тестирования - запрос должен быть вида
      * "/get-user/id.{id}/cat.{cat}"
      * иначе,
@@ -205,9 +208,7 @@ public class ExtendedResponseEntityExceptionHandler extends ResponseEntityExcept
             HttpStatus status,
             WebRequest request
     ) {
-       //todo: вытащить все параметры
-
-
+        //todo: вытащить все параметры
         final String variableName = ex.getVariableName();
         String expected = "";
         if (!variableName.isEmpty()) {
@@ -217,25 +218,25 @@ public class ExtendedResponseEntityExceptionHandler extends ResponseEntityExcept
             );
         }
 
-        ErrorBody body = new ErrorBody();
-        body.setTimestamp(LocalDateTime.now());
-        body.setCustomMessage(String.format(
-                CUSTOM_MSG_TEMPLATE_MISSING,
-                "(MissingPathVariableException) Path variable",
-                expected,
-                ""
-        ));
-        body.setDebugMessage(ex.getMessage());
-        body.setStatus(status.value());
-        body.setStatusName(status.name());
+        ErrorBody body = new ErrorBody()
+                .setTimestamp(LocalDateTime.now())
+                .setCustomMessage(String.format(
+                        CUSTOM_MSG_TEMPLATE_MISSING,
+                        "(MissingPathVariableException) Path variable",
+                        expected,
+                        ""
+                ))
+                .setDebugMessage(ex.getMessage())
+                .setStatus(status.value())
+                .setStatusName(status.name());
 
         return super.handleExceptionInternal(ex, body, headers, status, request);
     }
 
     /**
      * 400 BAD_REQUEST
-     *
-     *  /get-user?idR=8&cat=
+     * <p>
+     * /get-user?idR=8&cat=
      */
     @Override
     protected ResponseEntity<Object> handleMissingServletRequestParameter(
@@ -254,26 +255,26 @@ public class ExtendedResponseEntityExceptionHandler extends ResponseEntityExcept
             );
         }
 
-        ErrorBody body = new ErrorBody();
-        body.setTimestamp(LocalDateTime.now());
-        body.setCustomMessage(String.format(
-                CUSTOM_MSG_TEMPLATE_MISSING,
-                "(MissingServletRequestParameter) Servlet request parameter",
-                expected,
-                ""
-        ));
-        body.setDebugMessage(ex.getMessage());
-        body.setStatus(status.value());
-        body.setStatusName(status.name());
+        ErrorBody body = new ErrorBody()
+                .setTimestamp(LocalDateTime.now())
+                .setCustomMessage(String.format(
+                        CUSTOM_MSG_TEMPLATE_MISSING,
+                        "(MissingServletRequestParameter) Servlet request parameter",
+                        expected,
+                        ""
+                ))
+                .setDebugMessage(ex.getMessage())
+                .setStatus(status.value())
+                .setStatusName(status.name());
 
         return super.handleExceptionInternal(ex, body, headers, status, request);
     }
 
     /**
      * 400 BAD_REQUEST
-     *
+     * <p>
      * missing session attribute, missing required header ???
-     * TODO: yt удалось установить при каких условиях выпадает эта ошибка!
+     * TODO: не удалось установить при каких условиях выпадает эта ошибка!
      */
     @Override
     protected ResponseEntity<Object> handleServletRequestBindingException(
@@ -282,22 +283,22 @@ public class ExtendedResponseEntityExceptionHandler extends ResponseEntityExcept
             HttpStatus status,
             WebRequest request
     ) {
-        ErrorBody body = new ErrorBody();
-        body.setTimestamp(LocalDateTime.now());
-        body.setCustomMessage("ServletRequestBindingException");
-        body.setDebugMessage(ex.getMessage());
-        body.setStatus(status.value());
-        body.setStatusName(status.name());
+        ErrorBody body = new ErrorBody()
+                .setTimestamp(LocalDateTime.now())
+                .setCustomMessage("ServletRequestBindingException")
+                .setDebugMessage(ex.getMessage())
+                .setStatus(status.value())
+                .setStatusName(status.name());
 
         return super.handleExceptionInternal(ex, body, headers, status, request);
     }
 
     /**
      * 500 INTERNAL_SERVER_ERROR
-     *
+     * <p>
      * Для тестирования
-     * - создать конвертер, например StringToUserDTOConverter
-     * - НЕ регистрировать его в конфигах!
+     * - создать КОНВЕРТЕР, например StringToUserDTOConverter
+     * - НЕ РЕГИСТРИРОВАТЬ его в конфигах!
      * - создать метод с параметром @RequestParam("user") UserDTO user
      * - вызвать в постмане "/string-to-user?user=1234,Peter,true"
      */
@@ -308,24 +309,28 @@ public class ExtendedResponseEntityExceptionHandler extends ResponseEntityExcept
             HttpStatus status,
             WebRequest request
     ) {
-        ErrorBody body = new ErrorBody();
-        body.setTimestamp(LocalDateTime.now());
-        body.setCustomMessage("ConversionNotSupportedException");
-        body.setDebugMessage(ex.getMessage());
-        body.setStatus(status.value());
-        body.setStatusName(status.name());
+        ErrorBody body = new ErrorBody()
+                .setTimestamp(LocalDateTime.now())
+                .setCustomMessage("ConversionNotSupportedException")
+                .setDebugMessage(ex.getMessage())
+                .setStatus(status.value())
+                .setStatusName(status.name());
 
         return super.handleExceptionInternal(ex, body, headers, status, request);
     }
 
     /**
      * 400 BAD_REQUEST
-     *
+     * <p>
      * Например:
      * - есть конвертер
      * - конвертер Зарегистрирован!
      * - метод с параметром @RequestParam("user") UserDTO user
      * - вызываем "/string-to-user?user=1234,Peter," БЕЗ 1 параметра
+     * <p>
+     * Либо:
+     * - запрос вида /get-user?id={id}&cat={cat}
+     * - в {cat} ожидается Integer, а передаем String
      */
     @Override
     protected ResponseEntity<Object> handleTypeMismatch(
@@ -334,12 +339,12 @@ public class ExtendedResponseEntityExceptionHandler extends ResponseEntityExcept
             HttpStatus status,
             WebRequest request
     ) {
-        ErrorBody body = new ErrorBody();
-        body.setTimestamp(LocalDateTime.now());
-        body.setCustomMessage("TypeMismatchException");
-        body.setDebugMessage(ex.getMessage());
-        body.setStatus(status.value());
-        body.setStatusName(status.name());
+        ErrorBody body = new ErrorBody()
+                .setTimestamp(LocalDateTime.now())
+                .setCustomMessage("TypeMismatchException")
+                .setDebugMessage(ex.getMessage())
+                .setStatus(status.value())
+                .setStatusName(status.name());
 
         return super.handleExceptionInternal(ex, body, headers, status, request);
     }
@@ -347,7 +352,9 @@ public class ExtendedResponseEntityExceptionHandler extends ResponseEntityExcept
     /**
      * 400 BAD_REQUEST
      *
-     * Customize the response for HttpMessageNotReadableException.
+     * post/json
+     * - параметр валидации int - передаем 1.3
+     * - без закрывающей скобки
      */
     @Override
     protected ResponseEntity<Object> handleHttpMessageNotReadable(
@@ -356,18 +363,20 @@ public class ExtendedResponseEntityExceptionHandler extends ResponseEntityExcept
             HttpStatus status,
             WebRequest request
     ) {
-        ErrorBody body = new ErrorBody();
-        body.setTimestamp(LocalDateTime.now());
-        body.setCustomMessage("HttpMessageNotReadableException");
-        body.setDebugMessage(ex.getMessage());
-        body.setStatus(status.value());
-        body.setStatusName(status.name());
+        ErrorBody body = new ErrorBody()
+                .setTimestamp(LocalDateTime.now())
+                .setCustomMessage("HttpMessageNotReadableException")
+                .setDebugMessage(ex.getMessage())
+                .setStatus(status.value())
+                .setStatusName(status.name());
 
         return super.handleExceptionInternal(ex, body, headers, status, request);
     }
 
     /**
      * 500 INTERNAL_SERVER_ERROR
+     * <p>
+     * TODO: не удалось установить при каких условиях выпадает эта ошибка!
      */
     @Override
     protected ResponseEntity<Object> handleHttpMessageNotWritable(
@@ -376,12 +385,12 @@ public class ExtendedResponseEntityExceptionHandler extends ResponseEntityExcept
             HttpStatus status,
             WebRequest request
     ) {
-        ErrorBody body = new ErrorBody();
-        body.setTimestamp(LocalDateTime.now());
-        body.setCustomMessage("HttpMessageNotWritableException");
-        body.setDebugMessage(ex.getMessage());
-        body.setStatus(status.value());
-        body.setStatusName(status.name());
+        ErrorBody body = new ErrorBody()
+                .setTimestamp(LocalDateTime.now())
+                .setCustomMessage("HttpMessageNotWritableException")
+                .setDebugMessage(ex.getMessage())
+                .setStatus(status.value())
+                .setStatusName(status.name());
 
         return super.handleExceptionInternal(ex, body, headers, status, request);
     }

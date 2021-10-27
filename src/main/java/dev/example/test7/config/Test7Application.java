@@ -9,7 +9,7 @@ import org.springframework.web.servlet.config.annotation.EnableWebMvc;
 @SpringBootApplication
 @ComponentScan(basePackages = "dev")
 //@EnableWebMvc
-@PropertySource("classpath:application.properties")
+//@PropertySource("classpath:application.properties")
 public class Test7Application {
 
     public static void main(String[] args) {

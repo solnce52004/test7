@@ -2,17 +2,18 @@ package dev.example.test7.exceptions.error_bodies;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
 import com.fasterxml.jackson.annotation.JsonInclude;
-import lombok.Getter;
+import lombok.Data;
 import lombok.NoArgsConstructor;
-import lombok.Setter;
+import lombok.experimental.Accessors;
 
 import java.time.LocalDateTime;
 import java.util.Map;
 import java.util.Set;
 
 @NoArgsConstructor
-@Setter
-@Getter
+@Data
+@Accessors(chain = true)
+
 //список будет включен в ответ только в том случае, если мы его зададим
 @JsonInclude(JsonInclude.Include.NON_NULL)
 

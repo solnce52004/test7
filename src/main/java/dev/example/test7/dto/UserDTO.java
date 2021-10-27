@@ -1,10 +1,14 @@
 package dev.example.test7.dto;
 
 import jakarta.xml.bind.annotation.XmlRootElement;
-import lombok.*;
+import lombok.Data;
+import lombok.NoArgsConstructor;
+import lombok.RequiredArgsConstructor;
 
 import javax.validation.constraints.NotBlank;
+import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;
+import javax.validation.valueextraction.ExtractedValue;
 import java.io.Serializable;
 
 @NoArgsConstructor
@@ -36,7 +40,8 @@ public class UserDTO implements Serializable {
 
     public UserDTO(
             @NotBlank(message = ERROR_MSG_EMPTY_VALUE) String name,
-            @NotBlank(message = ERROR_MSG_EMPTY_VALUE) @Size(min = 2, max = 8, message = ERROR_MSG_NOT_VALID) String password,
+            @NotBlank(message = ERROR_MSG_EMPTY_VALUE)
+            @Size(min = 2, max = 8, message = ERROR_MSG_NOT_VALID) String password,
             Boolean isRememberMe
     ) {
         this.name = name;
@@ -46,5 +51,22 @@ public class UserDTO implements Serializable {
 
     public boolean isAdmin() {
         return name.equals("admin");
+    }
+
+    /////
+    @NotNull
+    private int age;
+
+    public UserDTO(
+            @NotBlank(message = ERROR_MSG_EMPTY_VALUE) String name,
+            @NotBlank(message = ERROR_MSG_EMPTY_VALUE)
+            @Size(min = 2, max = 8, message = ERROR_MSG_NOT_VALID) String password,
+            Boolean isRememberMe,
+            @NotNull int age
+    ) {
+        this.name = name;
+        this.password = password;
+        this.isRememberMe = isRememberMe;
+        this.age = age;
     }
 }
