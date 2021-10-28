@@ -48,7 +48,7 @@ public class HomeController {
     @GetMapping(Routes.ROUTE_LOGIN)
     public String index(Model model) {
         if (!model.containsAttribute("user")) {
-            model.addAttribute("user", new UserDTO());
+            model.addAttribute("user", new UserDTO("", ""));
         }
         return Routes.VIEW_LOGIN;
     }

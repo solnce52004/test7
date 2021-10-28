@@ -10,6 +10,7 @@ import org.springframework.http.converter.HttpMessageNotReadableException;
 import org.springframework.http.converter.HttpMessageNotWritableException;
 import org.springframework.util.CollectionUtils;
 import org.springframework.validation.BindException;
+import org.springframework.validation.ObjectError;
 import org.springframework.web.HttpMediaTypeNotAcceptableException;
 import org.springframework.web.HttpMediaTypeNotSupportedException;
 import org.springframework.web.HttpRequestMethodNotSupportedException;
@@ -17,6 +18,9 @@ import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.MissingPathVariableException;
 import org.springframework.web.bind.MissingServletRequestParameterException;
 import org.springframework.web.bind.ServletRequestBindingException;
+import org.springframework.web.bind.annotation.ExceptionHandler;
+import org.springframework.web.bind.annotation.ResponseBody;
+import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
 import org.springframework.web.context.request.ServletWebRequest;
 import org.springframework.web.context.request.WebRequest;
@@ -25,6 +29,7 @@ import org.springframework.web.multipart.support.MissingServletRequestPartExcept
 import org.springframework.web.servlet.NoHandlerFoundException;
 import org.springframework.web.servlet.mvc.method.annotation.ResponseEntityExceptionHandler;
 
+import javax.servlet.http.HttpServletResponse;
 import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Set;
@@ -272,9 +277,11 @@ public class ExtendedResponseEntityExceptionHandler extends ResponseEntityExcept
 
     /**
      * 400 BAD_REQUEST
-     * <p>
-     * missing session attribute, missing required header ???
-     * TODO: не удалось установить при каких условиях выпадает эта ошибка!
+     *
+     * - запрос вида POST "/dep14/user"
+     * - Content-Type application/json
+     * - методе параметр @RequestAttribute UserDTO user
+     * - в постмане в боди не передается юзер
      */
     @Override
     protected ResponseEntity<Object> handleServletRequestBindingException(
@@ -375,8 +382,8 @@ public class ExtendedResponseEntityExceptionHandler extends ResponseEntityExcept
 
     /**
      * 500 INTERNAL_SERVER_ERROR
-     * <p>
-     * TODO: не удалось установить при каких условиях выпадает эта ошибка!
+     *
+     * нет getter/setter/noargs
      */
     @Override
     protected ResponseEntity<Object> handleHttpMessageNotWritable(
@@ -396,65 +403,119 @@ public class ExtendedResponseEntityExceptionHandler extends ResponseEntityExcept
     }
 
     /**
-     * Customize the response for MissingServletRequestPartException.
-     * <p>This method delegates to {@link #handleExceptionInternal}.
+     * 400 BAD_REQUEST
      *
-     * @param ex      the exception
-     * @param headers the headers to be written to the response
-     * @param status  the selected response status
-     * @param request the current request
-     * @return a {@code ResponseEntity} instance
+     * - POST  consumes = MediaType.MULTIPART_FORM_DATA_VALUE
+     * - в методе - @RequestPart(name = "file888") MultipartFile file
+     *
+     * POSTMAN:
+     * - Content-Type = multipart/form-data
+     * - Body: key="file", value="загружем файл"
      */
     @Override
-    protected ResponseEntity<Object> handleMissingServletRequestPart(MissingServletRequestPartException ex, HttpHeaders headers, HttpStatus status, WebRequest request) {
-        return super.handleMissingServletRequestPart(ex, headers, status, request);
+    protected ResponseEntity<Object> handleMissingServletRequestPart(
+            MissingServletRequestPartException ex,
+            HttpHeaders headers,
+            HttpStatus status,
+            WebRequest request
+    ) {
+        ErrorBody body = new ErrorBody()
+                .setTimestamp(LocalDateTime.now())
+                .setCustomMessage("MissingServletRequestPartException")
+                .setDebugMessage(ex.getMessage())
+                .setStatus(status.value())
+                .setStatusName(status.name());
+
+        return super.handleExceptionInternal(ex, body, headers, status, request);
     }
 
     /**
-     * Customize the response for BindException.
-     * <p>This method delegates to {@link #handleExceptionInternal}.
+     * 400 BAD_REQUEST
      *
-     * @param ex      the exception
-     * @param headers the headers to be written to the response
-     * @param status  the selected response status
-     * @param request the current request
-     * @return a {@code ResponseEntity} instance
+     * TODO: поймать не удалось...
      */
     @Override
-    protected ResponseEntity<Object> handleBindException(BindException ex, HttpHeaders headers, HttpStatus status, WebRequest request) {
-        return super.handleBindException(ex, headers, status, request);
+    protected ResponseEntity<Object> handleBindException(
+            BindException ex,
+            HttpHeaders headers,
+            HttpStatus status,
+            WebRequest request
+    ) {
+        ErrorBody body = new ErrorBody()
+                .setTimestamp(LocalDateTime.now())
+                .setCustomMessage("BindException")
+                .setDebugMessage(ex.getMessage())
+                .setStatus(status.value())
+                .setStatusName(status.name());
+
+        return super.handleExceptionInternal(ex, body, headers, status, request);
+    }
+
+    //если в этом классе два обработчика одной ошибки - будет исключение:
+    //Error creating bean with name 'handlerExceptionResolver' defined in class path resource
+//    @ExceptionHandler(BindException.class)
+//    @ResponseStatus(HttpStatus.UNPROCESSABLE_ENTITY)
+//    @ResponseBody
+//    public List<ObjectError> reHandleBindException(BindException exception) {
+//        return exception.getAllErrors();
+//    }
+
+    /**
+     * 400 BAD_REQUEST
+     *
+     * - spring.mvc.throw-exception-if-no-handler-found=true
+     * - вызываем несуществующий метод
+     */
+    @Override
+    protected ResponseEntity<Object> handleNoHandlerFoundException(
+            NoHandlerFoundException ex,
+            HttpHeaders headers,
+            HttpStatus status,
+            WebRequest request
+    ) {
+        ErrorBody body = new ErrorBody()
+                .setTimestamp(LocalDateTime.now())
+                .setCustomMessage("(>***<) NoHandlerFoundException (>***<)")
+                .setDebugMessage(ex.getMessage())
+                .setStatus(status.value())
+                .setStatusName(status.name());
+
+        return super.handleExceptionInternal(ex, body, headers, status, request);
     }
 
     /**
-     * Customize the response for NoHandlerFoundException.
-     * <p>This method delegates to {@link #handleExceptionInternal}.
+     * 503 SERVICE_UNAVAILABLE
      *
-     * @param ex      the exception
-     * @param headers the headers to be written to the response
-     * @param status  the selected response status
-     * @param request the current request
-     * @return a {@code ResponseEntity} instance
-     * @since 4.0
+     * - Thread.sleep(10_000)
+     * - configurer.setDefaultTimeout(5_000)
      */
     @Override
-    protected ResponseEntity<Object> handleNoHandlerFoundException(NoHandlerFoundException ex, HttpHeaders headers, HttpStatus status, WebRequest request) {
-        return super.handleNoHandlerFoundException(ex, headers, status, request);
-    }
+    protected ResponseEntity<Object> handleAsyncRequestTimeoutException(
+            AsyncRequestTimeoutException ex,
+            HttpHeaders headers,
+            HttpStatus status,
+            WebRequest webRequest
+    ) {
+        if (webRequest instanceof ServletWebRequest) {
+            ServletWebRequest servletWebRequest = (ServletWebRequest) webRequest;
+            HttpServletResponse response = servletWebRequest.getResponse();
 
-    /**
-     * Customize the response for AsyncRequestTimeoutException.
-     * <p>This method delegates to {@link #handleExceptionInternal}.
-     *
-     * @param ex         the exception
-     * @param headers    the headers to be written to the response
-     * @param status     the selected response status
-     * @param webRequest the current request
-     * @return a {@code ResponseEntity} instance
-     * @since 4.2.8
-     */
-    @Override
-    protected ResponseEntity<Object> handleAsyncRequestTimeoutException(AsyncRequestTimeoutException ex, HttpHeaders headers, HttpStatus status, WebRequest webRequest) {
-        return super.handleAsyncRequestTimeoutException(ex, headers, status, webRequest);
+            if (response != null && response.isCommitted()) {
+                if (logger.isWarnEnabled()) {
+                    logger.warn("Async request timed out");
+                }
+                return null;
+            }
+        }
+
+        ErrorBody body = new ErrorBody()
+                .setTimestamp(LocalDateTime.now())
+                .setCustomMessage("AsyncRequestTimeoutException")
+                .setDebugMessage(ex.getMessage())
+                .setStatus(status.value())
+                .setStatusName(status.name());
+
+        return super.handleExceptionInternal(ex, body, headers, status, webRequest);
     }
 
 }

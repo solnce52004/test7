@@ -37,8 +37,15 @@ dependencies {
     implementation 'org.springframework.boot:spring-boot-starter-web'
 //    implementation 'org.liquibase:liquibase-core'
 //    implementation 'org.thymeleaf.extras:thymeleaf-extras-springsecurity5'
+
+    implementation 'org.springframework.boot:spring-boot-starter-aop:2.5.6'
+    runtimeOnly 'org.aspectj:aspectjweaver:1.9.8.RC1'
+    runtimeOnly 'org.aspectj:aspectjrt:1.9.8.RC1'
+
     compileOnly 'org.projectlombok:lombok'
     developmentOnly 'org.springframework.boot:spring-boot-devtools'
+    implementation 'org.springframework.boot:spring-boot-configuration-processor:2.5.6'
+
 //    runtimeOnly 'com.h2database:h2'
 //    runtimeOnly 'mysql:mysql-connector-java'
     annotationProcessor 'org.springframework.boot:spring-boot-configuration-processor'
@@ -52,6 +59,12 @@ dependencies {
     implementation 'jakarta.xml.bind:jakarta.xml.bind-api:4.0.0-RC2'
     implementation 'com.sun.xml.bind:jaxb-impl:3.0.2'
     implementation 'jakarta.activation:jakarta.activation-api:2.1.0-RC1'
+
+    implementation 'io.springfox:springfox-swagger2:3.0.0'
+    implementation 'io.springfox:springfox-boot-starter:3.0.0'
+    implementation 'io.springfox:springfox-swagger-ui:3.0.0'
+    implementation 'io.springfox:springfox-bean-validators:3.0.0'
+
 }
 
 test {

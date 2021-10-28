@@ -5,12 +5,14 @@ import dev.example.test7.interceptors.CheckUserInterceptor;
 import org.springframework.context.MessageSource;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.context.annotation.PropertySource;
 import org.springframework.context.support.ReloadableResourceBundleMessageSource;
 import org.springframework.format.FormatterRegistry;
 import org.springframework.http.MediaType;
 import org.springframework.http.converter.HttpMessageConverter;
 import org.springframework.http.converter.ResourceHttpMessageConverter;
 import org.springframework.web.servlet.LocaleResolver;
+import org.springframework.web.servlet.config.annotation.AsyncSupportConfigurer;
 import org.springframework.web.servlet.config.annotation.InterceptorRegistry;
 import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
 import org.springframework.web.servlet.i18n.CookieLocaleResolver;
@@ -20,6 +22,7 @@ import java.util.List;
 import java.util.Locale;
 
 @Configuration
+@PropertySource("classpath:application.properties")
 public class WebMvcConfig implements WebMvcConfigurer {
 
     @Override
@@ -73,5 +76,10 @@ public class WebMvcConfig implements WebMvcConfigurer {
                 List.of(new MediaType("application", "vnd.ms-excel"))
         );
         return converter;
+    }
+
+    @Override
+    public void configureAsyncSupport(AsyncSupportConfigurer configurer) {
+        configurer.setDefaultTimeout(30_000);
     }
 }
