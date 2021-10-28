@@ -1,0 +1,13 @@
+databaseChangeLog:
+  - includeAll:
+      path: classpath:/db/changelog/init/structure
+      context: dev
+#  - includeAll:
+#      path: classpath:/db/changelog/init/indexes
+#      context: dev
+#  - includeAll:
+#      path: classpath:/db/changelog/init/keys
+#      context: dev
+#  - includeAll:
+#      path: classpath:/db/changelog/init/data
+#      context: dev

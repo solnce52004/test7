@@ -1,0 +1,7 @@
+databaseChangeLog:
+  - include:
+      file: classpath:/db/changelog/init/changelog-init.yaml
+      context: dev
+#  - include:
+#      file: classpath:/db/changelog/patch/changelog-patch.yaml
+#      context: dev

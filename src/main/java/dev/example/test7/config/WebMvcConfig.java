@@ -22,7 +22,7 @@ import java.util.List;
 import java.util.Locale;
 
 @Configuration
-@PropertySource("classpath:application.properties")
+@PropertySource("classpath:application.yaml")
 public class WebMvcConfig implements WebMvcConfigurer {
 
     @Override

@@ -24,47 +24,60 @@ repositories {
 }
 
 dependencies {
-//    implementation 'org.springframework.boot:spring-boot-starter-batch'
-//    implementation 'org.springframework.boot:spring-boot-starter-data-jdbc'
-//    implementation 'org.springframework.boot:spring-boot-starter-data-jpa'
-//    implementation 'org.springframework.boot:spring-boot-starter-jdbc'
-//    implementation 'org.springframework.boot:spring-boot-starter-security'
-
-    implementation 'org.springframework.boot:spring-boot-starter-thymeleaf'
-    implementation 'org.springframework.boot:spring-boot-starter-validation'
-//    implementation group: 'org.hibernate.validator', name: 'hibernate-validator'
-
+    //web
     implementation 'org.springframework.boot:spring-boot-starter-web'
-//    implementation 'org.liquibase:liquibase-core'
+    providedRuntime 'org.springframework.boot:spring-boot-starter-tomcat'
+
+    //security
+//    implementation 'org.springframework.boot:spring-boot-starter-security'
 //    implementation 'org.thymeleaf.extras:thymeleaf-extras-springsecurity5'
 
+    //aop
     implementation 'org.springframework.boot:spring-boot-starter-aop:2.5.6'
     runtimeOnly 'org.aspectj:aspectjweaver:1.9.8.RC1'
     runtimeOnly 'org.aspectj:aspectjrt:1.9.8.RC1'
 
+    //lombok
     compileOnly 'org.projectlombok:lombok'
-    developmentOnly 'org.springframework.boot:spring-boot-devtools'
-    implementation 'org.springframework.boot:spring-boot-configuration-processor:2.5.6'
-
-//    runtimeOnly 'com.h2database:h2'
-//    runtimeOnly 'mysql:mysql-connector-java'
-    annotationProcessor 'org.springframework.boot:spring-boot-configuration-processor'
     annotationProcessor 'org.projectlombok:lombok'
-    providedRuntime 'org.springframework.boot:spring-boot-starter-tomcat'
+    implementation 'org.springframework.boot:spring-boot-configuration-processor:2.5.6'
+    annotationProcessor 'org.springframework.boot:spring-boot-configuration-processor'
+
+    //devtools
+    developmentOnly 'org.springframework.boot:spring-boot-devtools'
+
+    //db
+    implementation 'org.springframework.boot:spring-boot-starter-batch'
+    implementation 'org.springframework.boot:spring-boot-starter-data-jdbc'
+    implementation 'org.springframework.boot:spring-boot-starter-data-jpa'
+    implementation 'org.springframework.boot:spring-boot-starter-jdbc'
+    runtimeOnly 'mysql:mysql-connector-java'
+    implementation 'org.liquibase:liquibase-core'
+    //    runtimeOnly 'com.h2database:h2'
+
+    //validation
+    implementation 'org.springframework.boot:spring-boot-starter-validation'
+//    implementation group: 'org.hibernate.validator', name: 'hibernate-validator'
+
+    //thymeleaf
+    implementation 'org.springframework.boot:spring-boot-starter-thymeleaf'
+
+    //test
     testImplementation 'org.springframework.boot:spring-boot-starter-test'
-//    testImplementation 'org.springframework.batch:spring-batch-test'
+    testImplementation 'org.springframework.batch:spring-batch-test'
 //    testImplementation 'org.springframework.security:spring-security-test'
 
-    //в classpath ничего добавлять не надо
-    implementation 'jakarta.xml.bind:jakarta.xml.bind-api:4.0.0-RC2'
-    implementation 'com.sun.xml.bind:jaxb-impl:3.0.2'
-    implementation 'jakarta.activation:jakarta.activation-api:2.1.0-RC1'
-
+    //swagger2
     implementation 'io.springfox:springfox-swagger2:3.0.0'
     implementation 'io.springfox:springfox-boot-starter:3.0.0'
     implementation 'io.springfox:springfox-swagger-ui:3.0.0'
     implementation 'io.springfox:springfox-bean-validators:3.0.0'
 
+    //jaxb
+    //в classpath ничего добавлять не надо
+    implementation 'jakarta.xml.bind:jakarta.xml.bind-api:4.0.0-RC2'
+    implementation 'com.sun.xml.bind:jaxb-impl:3.0.2'
+    implementation 'jakarta.activation:jakarta.activation-api:2.1.0-RC1'
 }
 
 test {
