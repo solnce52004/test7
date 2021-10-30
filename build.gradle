@@ -5,6 +5,8 @@ plugins {
     id 'war'
 }
 
+apply plugin: 'war'
+
 group = 'dev.example'
 version = '0.0.1-SNAPSHOT'
 sourceCompatibility = '11'
@@ -17,6 +19,9 @@ configurations {
     compileOnly {
         extendsFrom annotationProcessor
     }
+//    all {
+//        exclude group: 'org.springframework.boot', module: 'spring-boot-starter-logging'
+//    }
 }
 
 repositories {
@@ -36,6 +41,16 @@ dependencies {
     implementation 'org.springframework.boot:spring-boot-starter-aop:2.5.6'
     runtimeOnly 'org.aspectj:aspectjweaver:1.9.8.RC1'
     runtimeOnly 'org.aspectj:aspectjrt:1.9.8.RC1'
+
+    //log
+    implementation 'org.springframework.boot:spring-boot-starter-log4j2'
+    modules {
+        module("org.springframework.boot:spring-boot-starter-logging") {
+            replacedBy("org.springframework.boot:spring-boot-starter-log4j2", "Use Log4j2 instead of Logback")
+        }
+    }
+//    implementation 'com.fasterxml.jackson.core:jackson-databind'
+//    implementation 'com.fasterxml.jackson.dataformat:jackson-dataformat-yaml'
 
     //lombok
     compileOnly 'org.projectlombok:lombok'

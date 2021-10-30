@@ -8,6 +8,7 @@ import org.springframework.boot.autoconfigure.orm.jpa.HibernateJpaAutoConfigurat
 import org.springframework.boot.builder.SpringApplicationBuilder;
 import org.springframework.boot.web.servlet.support.SpringBootServletInitializer;
 import org.springframework.context.annotation.ComponentScan;
+import org.springframework.context.annotation.PropertySource;
 import org.springframework.data.jpa.repository.config.EnableJpaRepositories;
 
 //@EnableWebMvc
@@ -24,6 +25,7 @@ import org.springframework.data.jpa.repository.config.EnableJpaRepositories;
 @ComponentScan(basePackages = "dev")
 @EnableJpaRepositories("dev.example.test7.repo")//обязательно!
 @EntityScan("dev.example.test7.entities")
+@PropertySource(value = {"classpath:application.yaml"})
 
 public class Test7Application extends SpringBootServletInitializer {
     public static void main(String[] args) {
