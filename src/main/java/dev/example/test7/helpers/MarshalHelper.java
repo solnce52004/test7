@@ -1,6 +1,6 @@
 package dev.example.test7.helpers;
 
-import dev.example.test7.config.Constants;
+import dev.example.test7.constants.Constant;
 import jakarta.xml.bind.JAXBContext;
 import jakarta.xml.bind.JAXBException;
 import jakarta.xml.bind.Marshaller;
@@ -26,7 +26,7 @@ public final class MarshalHelper {
         //для структурного отображения
         marshaller.setProperty(Marshaller.JAXB_FORMATTED_OUTPUT, Boolean.TRUE);
 
-        marshaller.marshal(obj, new File(Constants.LOCAL_FILE_STORAGE + objClass + ".xml"));
+        marshaller.marshal(obj, new File(Constant.LOCAL_FILE_STORAGE + objClass + ".xml"));
         marshaller.marshal(obj, System.out);
     }
 

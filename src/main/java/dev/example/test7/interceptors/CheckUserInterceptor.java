@@ -1,7 +1,7 @@
 package dev.example.test7.interceptors;
 
 import dev.example.test7.dto.UserDTO;
-import dev.example.test7.routes.Routes;
+import dev.example.test7.constants.Route;
 import org.springframework.web.servlet.HandlerInterceptor;
 import org.springframework.web.servlet.ModelAndView;
 
@@ -18,7 +18,7 @@ public class CheckUserInterceptor implements HandlerInterceptor {
             ModelAndView mav
     ) throws Exception {
 
-        if (request.getRequestURI().contains(Routes.ROUTE_CHECK_USER)) {
+        if (request.getRequestURI().contains(Route.ROUTE_CHECK_USER)) {
 
             final UserDTO user = (UserDTO) mav.getModel().get("user");
 
@@ -26,7 +26,7 @@ public class CheckUserInterceptor implements HandlerInterceptor {
                     user.getName().length() > 0 &&
                     !user.isAdmin()
             ) {
-                response.sendRedirect(request.getContextPath() + Routes.ROUTE_FAILED);
+                response.sendRedirect(request.getContextPath() + Route.ROUTE_FAILED);
             }
         }
     }

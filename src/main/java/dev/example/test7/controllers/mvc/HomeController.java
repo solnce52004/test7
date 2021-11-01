@@ -1,7 +1,8 @@
-package dev.example.test7.controllers.http;
+package dev.example.test7.controllers.mvc;
 
+import dev.example.test7.constants.View;
 import dev.example.test7.dto.UserDTO;
-import dev.example.test7.routes.Routes;
+import dev.example.test7.constants.Route;
 import lombok.extern.log4j.Log4j2;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Controller;
@@ -21,6 +22,7 @@ import javax.validation.Valid;
 @Log4j2
 //@SessionAttributes("user")
 
+
 public class HomeController {
 
 //    private final TranslatorService translatorService;
@@ -30,14 +32,14 @@ public class HomeController {
 //        this.translatorService = translatorService;
 //    }
 
-    @GetMapping(Routes.ROUTE_HOME)
+    @GetMapping(Route.ROUTE_HOME)
     public String home(HttpSession session) {
-        return Routes.VIEW_HOME;
+        return View.VIEW_HOME;
     }
 
-    @GetMapping(Routes.ROUTE_FAILED)
+    @GetMapping(Route.ROUTE_FAILED)
     public String failed() {
-        return Routes.VIEW_FAILED;
+        return View.VIEW_FAILED;
     }
 
 //    @ModelAttribute
@@ -45,24 +47,24 @@ public class HomeController {
 //        return new UserDTO();
 //    }
 
-    @GetMapping(Routes.ROUTE_LOGIN)
+    @GetMapping(Route.ROUTE_LOGIN)
     public String index(Model model) {
         if (!model.containsAttribute("user")) {
             model.addAttribute("user", new UserDTO("", ""));
         }
-        return Routes.VIEW_LOGIN;
+        return View.VIEW_LOGIN;
     }
 
-    @PostMapping(Routes.ROUTE_CHECK_USER)
+    @PostMapping(Route.ROUTE_CHECK_USER)
     public ModelAndView checkUser(
             @Valid @ModelAttribute("user") UserDTO user,
             BindingResult bindingResult,
             RedirectAttributes redirectAttributes
     ) {
-        String view = Routes.VIEW_HOME;
+        String view = View.VIEW_HOME;
 
         if (bindingResult.hasErrors()) {
-            view = Routes.VIEW_LOGIN;
+            view = View.VIEW_LOGIN;
             redirectAttributes.addFlashAttribute("org.springframework.validation.BindingResult.user", bindingResult);
         }
 

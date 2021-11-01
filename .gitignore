@@ -40,3 +40,4 @@ out/
 src/.DS_Store
 /storage/
 /logs/
+/tmp/
