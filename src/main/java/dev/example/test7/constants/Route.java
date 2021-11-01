@@ -10,6 +10,6 @@ public class Route {
     public static final String ROUTE_HOME = "/home";
     public static final String ROUTE_FAILED = "/failed";
     public static final String ROUTE_LOGIN = "/login";
-    public static final String ROUTE_UPLOAD = "/upload";
+    public static final String ROUTE_UPLOAD_INDEX = "/upload";
     public static final String ROUTE_UPLOAD_FILE = "/upload-file";
 }

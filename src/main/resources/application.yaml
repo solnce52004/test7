@@ -76,6 +76,9 @@ spring:
       max-request-size: 5MB
       file-size-threshold: 0
 
+#  main:
+#    allow-bean-definition-overriding: true
+
 #  h2:
 #    console:
 #      enabled: true
@@ -87,7 +90,6 @@ logging:
     ROOT: INFO
     org:
       springframework.web: DEBUG
-
       hibernate: INFO
 
 

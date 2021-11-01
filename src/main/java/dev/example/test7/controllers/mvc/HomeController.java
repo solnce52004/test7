@@ -21,8 +21,6 @@ import javax.validation.Valid;
 @Controller
 @Log4j2
 //@SessionAttributes("user")
-
-
 public class HomeController {
 
 //    private final TranslatorService translatorService;

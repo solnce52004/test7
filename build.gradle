@@ -100,6 +100,9 @@ dependencies {
     implementation 'jakarta.xml.bind:jakarta.xml.bind-api:4.0.0-RC2'
     implementation 'com.sun.xml.bind:jaxb-impl:3.0.2'
     implementation 'jakarta.activation:jakarta.activation-api:2.1.0-RC1'
+
+    //guava
+    implementation 'com.google.guava:guava:31.0.1-jre'
 }
 
 test {
