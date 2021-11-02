@@ -6,6 +6,7 @@ import dev.example.test7.helpers.UploadFilenameFormatter;
 import lombok.extern.log4j.Log4j2;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
+import org.springframework.core.io.InputStreamResource;
 import org.springframework.core.io.Resource;
 import org.springframework.core.io.UrlResource;
 import org.springframework.stereotype.Service;
@@ -14,12 +15,16 @@ import org.springframework.util.StringUtils;
 import org.springframework.web.multipart.MultipartFile;
 
 import javax.annotation.PostConstruct;
+import javax.servlet.ServletOutputStream;
+import javax.servlet.http.HttpServletResponse;
 import java.io.*;
 import java.net.MalformedURLException;
+import java.net.URI;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
-import java.util.stream.Stream;
+import java.util.Map;
+import java.util.stream.Collectors;
 
 @Service
 @Log4j2
@@ -69,6 +74,8 @@ public class FileSystemUploadService implements UploadService {
                 .toAbsolutePath()
                 .toFile();
 
+        //transferTo()
+
         try {
             final byte[] fileBytes = file.getBytes();
             try (BufferedOutputStream stream = new BufferedOutputStream(
@@ -84,15 +91,40 @@ public class FileSystemUploadService implements UploadService {
         return filename;
     }
 
+    /**
+     * fid->base name
+     */
     @Override
-    public Stream<Path> getAll() {
+    public Map<String, String> getAllStoredFileNamesWithFid() {
         try {
             return Files.walk(UPLOADS_PATH, 1)
                     .filter(path -> !path.equals(UPLOADS_PATH))
-                    .map(UPLOADS_PATH::relativize)
-                    .map(path -> Paths.get(
-                            uploadFilenameFormatter.parseToBaseFilename(path.toFile().getName())
+//                    .map(UPLOADS_PATH::relativize)
+                    .collect(Collectors.toMap(
+                            path -> uploadFilenameFormatter.parseFidByFormattedFilename(path.toFile().getName()),//fid
+                            path -> uploadFilenameFormatter.parseBaseFilenameByFormattedFilename(path.toFile().getName())//base name
                     ));
+        } catch (IOException e) {
+            throw new UploadException("Failed to read stored file names", e);
+        }
+    }
+
+    @Override
+    public URI getFileUriByFid(String fid) {
+        try {
+            final URI uri = Files.walk(UPLOADS_PATH, 1)
+                    .filter(path -> !path.equals(UPLOADS_PATH))
+                    .filter(path -> path
+                            .getFileName()
+                            .toString()
+                            .startsWith(fid + "_fid_"))
+                    .map(Path::toUri)
+                    .findFirst()
+                    .orElse(null);
+            if (uri == null) {
+                throw new UploadException("File not found by fid");
+            }
+            return uri;
         } catch (IOException e) {
             throw new UploadException("Failed to read stored files", e);
         }
@@ -100,7 +132,7 @@ public class FileSystemUploadService implements UploadService {
 
     @Override
     public Path resolveFormatted(String filename) {
-        final String filenameFormatted = uploadFilenameFormatter.formatFilename(filename);
+        final String filenameFormatted = uploadFilenameFormatter.formatFilenameByRandomFid(filename);
         return UPLOADS_PATH.resolve(filenameFormatted);
     }
 
@@ -118,6 +150,45 @@ public class FileSystemUploadService implements UploadService {
             }
         } catch (MalformedURLException | FileNotFoundException e) {
             throw new UploadException("Could not read file: " + filename, e);
+        }
+    }
+
+    /**
+     * +
+     */
+    @Override
+    public Resource getResourceByFid(String fid) {
+        final URI uriByFid = getFileUriByFid(fid);
+
+        try {
+            Resource resource = new UrlResource(uriByFid);
+            if (resource.exists() || resource.isReadable()) {
+                return resource;
+            } else {
+                throw new FileNotFoundException("Could not read file");
+            }
+        } catch (MalformedURLException | FileNotFoundException e) {
+            throw new UploadException("Could not read file", e);
+        }
+    }
+
+    @Override
+    public void getResourceStreamByFileAndResponse(File file, HttpServletResponse response) {
+        try {
+            final ServletOutputStream outputStream = response.getOutputStream();
+            final BufferedInputStream inputStream = new BufferedInputStream(new FileInputStream(file));
+
+            byte[] buffer = new byte[8192];
+            int bytesRead = -1;
+
+            while ((bytesRead = inputStream.read(buffer)) != -1) {
+                outputStream.write(buffer, 0, bytesRead);
+            }
+            inputStream.close();
+            outputStream.close();
+
+        } catch (IOException e) {
+            throw new UploadException("Could not read file", e);
         }
     }
 

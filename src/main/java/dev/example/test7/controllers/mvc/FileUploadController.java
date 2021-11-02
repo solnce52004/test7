@@ -2,6 +2,7 @@ package dev.example.test7.controllers.mvc;
 
 import dev.example.test7.constants.Route;
 import dev.example.test7.constants.View;
+import dev.example.test7.exceptions.custom_exceptions.UploadException;
 import dev.example.test7.services.UploadService;
 import lombok.extern.log4j.Log4j2;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -10,10 +11,7 @@ import org.springframework.http.MediaType;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.servlet.ModelAndView;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
@@ -22,7 +20,6 @@ import org.springframework.web.servlet.view.RedirectView;
 import java.util.ArrayList;
 
 @Controller
-@RequestMapping("/")
 @Log4j2
 public class FileUploadController {
 
@@ -62,7 +59,7 @@ public class FileUploadController {
     }
 
     @PostMapping(
-            value = Route.ROUTE_UPLOAD_FILE,
+            path = Route.ROUTE_UPLOAD_FILE,
             consumes = MediaType.MULTIPART_FORM_DATA_VALUE
     )
     public ModelAndView uploadFile(
@@ -94,5 +91,19 @@ public class FileUploadController {
         mav.setView(redirectView);
 
         return mav;
+    }
+
+    @ExceptionHandler(UploadException.class)
+    public String uploadExceptionHandler(
+            UploadException e,
+            RedirectAttributes redirectAttributes
+    ) {
+        log.warn("*** uploadExceptionHandler ***: {}", e.getMessage());
+
+        final ArrayList<String> errors = new ArrayList<>();
+        errors.add(e.getMessage());
+        redirectAttributes.addFlashAttribute("errors", errors);
+
+        return "redirect:" + Route.ROUTE_UPLOAD_INDEX;
     }
 }

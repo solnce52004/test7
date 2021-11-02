@@ -8,5 +8,5 @@ public final class LocalConstant {
 
     public static final String STORAGE = "./storage/";
     public static final String UPLOADS = "uploads";
-    public static final String LOCAL_UPLOADED_FILE_NAME_FORMAT = "%s_fid_%s.%s";
+    public static final String LOCAL_UPLOADED_FILE_NAME_FORMAT = "%s_fid_%s";
 }

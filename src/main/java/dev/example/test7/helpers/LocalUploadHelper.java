@@ -2,15 +2,11 @@ package dev.example.test7.helpers;
 
 import dev.example.test7.constants.LocalConstant;
 import lombok.extern.log4j.Log4j2;
-import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Component;
 
 import java.util.UUID;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
-
-import static com.google.common.io.Files.getFileExtension;
-import static com.google.common.io.Files.getNameWithoutExtension;
 
 @Log4j2
 @Component("LocalUploadHelper")
@@ -25,31 +21,38 @@ public class LocalUploadHelper implements UploadFilenameFormatter {
      * в бд будем класть fid в отдельное поле, потом сорибать/разбирать
      * маска будет вида "host:port/fid?filename=filename&domain=domain"
      */
-    @Override
-    public String formatFilename(String filename) {
-        final String extension = getFileExtension(filename);
-        String nameWithoutExtension = getNameWithoutExtension(filename);
 
+    @Override
+    public String formatFilenameByRandomFid(String filename) {
         return String.format(
                 LocalConstant.LOCAL_UPLOADED_FILE_NAME_FORMAT,
-                nameWithoutExtension,
                 UUID.randomUUID().toString().replaceAll("-", ""),
-                extension
+                filename
         );
     }
 
     @Override
-    public String parseToBaseFilename(String filenameFormatted) {
-        final String extension = getFileExtension(filenameFormatted);
-        String nameWithoutExtension = getNameWithoutExtension(filenameFormatted);
-
-        Pattern p = Pattern.compile("^(.+)_fid_(.+)$");// скомпилировали регулярное
-        Matcher m = p.matcher(nameWithoutExtension);// поисковик в тексте
-
+    public String formatFilenameByExistFid(String filename, String fid) {
         return String.format(
-                "%s.%s",
-                m.replaceAll("$1"),
-                extension
+                LocalConstant.LOCAL_UPLOADED_FILE_NAME_FORMAT,
+                fid,
+                filename
         );
+    }
+
+    @Override
+    public String parseBaseFilenameByFormattedFilename(String filenameFormatted) {
+        Pattern p = Pattern.compile("^(.+)_fid_(.+)$");// скомпилировали регулярное
+        Matcher m = p.matcher(filenameFormatted);// поисковик в тексте
+
+        return m.replaceAll("$2");
+    }
+
+    @Override
+    public String parseFidByFormattedFilename(String filenameFormatted) {
+        Pattern p = Pattern.compile("^(.+)_fid_(.+)$");
+        Matcher m = p.matcher(filenameFormatted);
+
+        return m.replaceAll("$1");
     }
 }

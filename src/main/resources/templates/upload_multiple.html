@@ -20,16 +20,16 @@
         <div class="col-md-offset-3 col-md-6">
 
             <form  method="post"
-                   th:action="@{/upload-file}"
+                   th:action="@{/upload-file-multiple}"
                    enctype="multipart/form-data"
-                    class="form-horizontal">
+                   class="form-horizontal">
 
-                <span class="heading">Загрузка одного файла</span>
+                <span class="heading">Загрузка нескольких файлов</span>
 
                 <div class="form-group">
                     <input type="file"
                            id="file"
-                           name="file">
+                           name="file" multiple>
                 </div>
                 <br/>
                 <div th:if="${!errors.isEmpty()}">
@@ -43,10 +43,18 @@
 
         </div>
     </div>
-    <div th:if="${!uploadedFiles.isEmpty()}">
-        <p>Загружен файл:</p>
-        <div class="alert alert-warning" th:text="*{uploadedFiles.get(0)}"></div>
-    </div>
+    <p>Сохраненные только что файлы:</p>
+    <ul th:if="${!uploadedFiles.isEmpty()}" th:each="uploaded : ${uploadedFiles}">
+        <li class="alert alert-warning" th:text="*{uploaded}"></li>
+    </ul>
+    <p>Все сохраненные файлы:</p>
+    <ul th:if="${!storedFileNamesWithUri.isEmpty()}" th:each="stored : ${storedFileNamesWithUri}">
+<!--        <a download="*{stored.getKey()}">-->
+        <a th:href="@{'/get-resource-by-fid/' + *{stored.getKey()}}">
+<!--        <a th:href="*{stored.getKey()}">-->
+            <li class="alert alert-warning" th:text="*{stored.getValue()}">File</li>
+        </a>
+    </ul>
 </div>
 </body>
 </html>
