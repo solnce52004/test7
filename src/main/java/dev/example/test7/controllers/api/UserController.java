@@ -75,6 +75,23 @@ public class UserController {
         return new ResponseEntity<>(users, HttpStatus.OK);
     }
 
+    @ApiOperation(value = "Поиск всех пользователей по имени")
+    @GetMapping(
+            path = "/users/{name}",
+            produces = MediaType.APPLICATION_JSON_VALUE
+    )
+    public ResponseEntity<List<User>> getAllByName(
+            @PathVariable("name") String name
+    ) {
+        final List<User> users = userService.findAllByName(name);
+//        final List<User> users = userService.findAll();
+        if (users.isEmpty()) {
+            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+        }
+
+        return new ResponseEntity<>(users, HttpStatus.OK);
+    }
+
     @ApiOperation(value = "Частичное обновление данных пользователя с указанным id")
     @PatchMapping(
             path = "/user/{id}",

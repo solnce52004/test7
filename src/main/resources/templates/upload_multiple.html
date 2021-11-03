@@ -49,12 +49,18 @@
     </ul>
     <p>Все сохраненные файлы:</p>
     <ul th:if="${!storedFileNamesWithUri.isEmpty()}" th:each="stored : ${storedFileNamesWithUri}">
-<!--        <a download="*{stored.getKey()}">-->
         <a th:href="@{'/get-resource-by-fid/' + *{stored.getKey()}}">
-<!--        <a th:href="*{stored.getKey()}">-->
             <li class="alert alert-warning" th:text="*{stored.getValue()}">File</li>
         </a>
     </ul>
+
+<!--    <form  method="get"-->
+<!--           th:action="@{/delete-uploads}"-->
+<!--           class="form-horizontal">-->
+<!--        <button>Удалить всю папку uploads</button>-->
+<!--    </form>-->
+
+    <a th:href="@{/users/export}">Cкачать всех пользователей в формате .xlsx</a>
 </div>
 </body>
 </html>

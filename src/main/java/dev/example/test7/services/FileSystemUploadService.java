@@ -4,6 +4,7 @@ import dev.example.test7.constants.LocalConstant;
 import dev.example.test7.exceptions.custom_exceptions.UploadException;
 import dev.example.test7.helpers.UploadFilenameFormatter;
 import lombok.extern.log4j.Log4j2;
+import org.apache.commons.io.IOUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.core.io.InputStreamResource;
@@ -136,23 +137,6 @@ public class FileSystemUploadService implements UploadService {
         return UPLOADS_PATH.resolve(filenameFormatted);
     }
 
-    @Override
-    public Resource getAsResource(String filename) {
-        try {
-            Path file = resolveFormatted(filename);
-            Resource resource = new UrlResource(file.toUri());
-            if (resource.exists() || resource.isReadable()) {
-//                final String baseFilename = uploadFilenameFormatter.parseToBaseFilename(file.toString());
-                return resource;
-            } else {
-                throw new FileNotFoundException(
-                        "Could not read file: " + filename);
-            }
-        } catch (MalformedURLException | FileNotFoundException e) {
-            throw new UploadException("Could not read file: " + filename, e);
-        }
-    }
-
     /**
      * +
      */
@@ -173,10 +157,10 @@ public class FileSystemUploadService implements UploadService {
     }
 
     @Override
-    public void getResourceStreamByFileAndResponse(File file, HttpServletResponse response) {
-        try {
-            final ServletOutputStream outputStream = response.getOutputStream();
-            final BufferedInputStream inputStream = new BufferedInputStream(new FileInputStream(file));
+    public void writeResourceStreamToOutputFromFile(File file, OutputStream outputStream) {
+        try (BufferedInputStream inputStream = new BufferedInputStream(
+                Files.newInputStream(Path.of(file.getAbsolutePath()))
+        )) {
 
             byte[] buffer = new byte[8192];
             int bytesRead = -1;
@@ -184,8 +168,22 @@ public class FileSystemUploadService implements UploadService {
             while ((bytesRead = inputStream.read(buffer)) != -1) {
                 outputStream.write(buffer, 0, bytesRead);
             }
-            inputStream.close();
-            outputStream.close();
+
+        } catch (IOException e) {
+            throw new UploadException("Could not read file", e);
+        }
+    }
+
+    public void copyResourceStreamToOutputFromFile(File file, OutputStream outputStream) {
+        //FileInputStream is deprecated
+//        try(BufferedInputStream inputStream = new BufferedInputStream(new FileInputStream(file))) {
+
+        try (BufferedInputStream inputStream = new BufferedInputStream(
+                Files.newInputStream(Path.of(file.getAbsolutePath()))
+        )) {
+
+            //DEFAULT_BUFFER_SIZE
+            IOUtils.copy(inputStream, outputStream);
 
         } catch (IOException e) {
             throw new UploadException("Could not read file", e);
@@ -194,6 +192,12 @@ public class FileSystemUploadService implements UploadService {
 
     @Override
     public void deleteAll() {
-        FileSystemUtils.deleteRecursively(UPLOADS_PATH.toFile());
+        if (Files.isDirectory(UPLOADS_PATH)) {
+            try {
+                FileSystemUtils.deleteRecursively(UPLOADS_PATH);
+            } catch (IOException e) {
+                throw new UploadException("Could not delete uploads", e);
+            }
+        }
     }
 }

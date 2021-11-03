@@ -7,6 +7,8 @@ import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 @Service
 public class UserService implements BaseCrudService<User> {
@@ -30,9 +32,11 @@ public class UserService implements BaseCrudService<User> {
 
     @Override
     public List<User> findAll() {
-        List<User> users = new ArrayList<>();
-        userRepository.findAll().forEach(users::add);
-        return users;
+        return userRepository.findAll();
+    }
+
+    public List<User> findAllByName(String name) {
+        return userRepository.findAllByName(name);
     }
 
     //todo:!!!!
