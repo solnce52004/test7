@@ -2,7 +2,6 @@ package dev.example.test7.controllers.mvc;
 
 import dev.example.test7.constants.Route;
 import dev.example.test7.constants.View;
-import dev.example.test7.dto.UserDTO;
 import dev.example.test7.entities.User;
 import dev.example.test7.exceptions.custom_exceptions.UploadException;
 import dev.example.test7.exporters.UserExcelExporter;
@@ -96,8 +95,8 @@ public class FileUploadMultipleController {
                 ? (ArrayList<Object>) model.getModelMap().getAttribute("uploadedFiles")
                 : new ArrayList<>();
 
-        if (files != null && files.length > 0){
-            for (MultipartFile file: files){
+        if (files != null && files.length > 0) {
+            for (MultipartFile file : files) {
                 String filename = uploadService.store(file);
                 log.info(filename);
                 uploadedFiles.add(filename);
@@ -141,7 +140,7 @@ public class FileUploadMultipleController {
 //            uploadService.writeResourceStreamToOutputFromFile(file, outputStream);
             uploadService.copyResourceStreamToOutputFromFile(file, outputStream);
 
-        } catch (IOException e){
+        } catch (IOException e) {
             throw new UploadException("Could not get outputStream", e);
         }
     }
@@ -186,26 +185,51 @@ public class FileUploadMultipleController {
     @GetMapping("/users/export")
     public void exportUsersToExcel(
             HttpServletResponse response
-    ){
+    ) {
         String filename = "users.xlsx";
-        response.setContentType("application/vnd.ms-excel");
-//        response.setContentType("application/octet-stream");
+//        response.setContentType("application/vnd.ms-excel");
+        response.setContentType("application/octet-stream");
         response.setHeader(
                 "Content-Disposition",
                 String.format("attachment; filename=\"%s\"", filename)
         );
 
-//        List<User> users = userService.findAll();
-        List<User> users = userService.findAllByName("admin");
+        List<User> users = userService.findAll();
+//        List<User> users = userService.findAllByName("admin");
         UserExcelExporter exporter = new UserExcelExporter(users);
 
         try (ServletOutputStream outputStream = response.getOutputStream()) {
             exporter.exportToOutputStream(outputStream);
-        } catch (IOException e){
+        } catch (IOException e) {
             throw new UploadException("Could not get outputStream", e);
         }
     }
 
+    @PostMapping(
+            path = "/users/import",
+            consumes = MediaType.MULTIPART_FORM_DATA_VALUE
+    )
+    public ModelAndView importUsersFromExcelToDB(
+            @RequestParam("fileImport") MultipartFile file,
+            ModelAndView model,
+            BindingResult bindingResult,
+            RedirectAttributes redirectAttributes
+    ) {
+        String filename = uploadService.store(file);
+        log.info(filename);
+
+        //TODO: добавить кастомные ошибки и валидацию
+//        redirectAttributes.addFlashAttribute("errorsImport", new ArrayList<>());
+        redirectAttributes.addFlashAttribute("errors", new ArrayList<>());
+
+        final RedirectView redirectView = new RedirectView(Route.ROUTE_UPLOAD_MULTIPLE_INDEX);
+        redirectView.setStatusCode(HttpStatus.MOVED_PERMANENTLY);
+
+        final ModelAndView mav = new ModelAndView();
+        mav.setView(redirectView);
+
+        return mav;
+    }
 
 
     ////////////////////////////////////////

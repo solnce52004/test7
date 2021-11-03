@@ -1,14 +1,18 @@
 package dev.example.test7.exporters;
 
 import dev.example.test7.entities.User;
-import org.apache.poi.hssf.usermodel.HSSFDataFormat;
+import dev.example.test7.exceptions.custom_exceptions.UploadException;
+import org.apache.poi.hssf.usermodel.*;
 import org.apache.poi.ss.usermodel.CellType;
+import org.apache.poi.ss.usermodel.DataValidation;
+import org.apache.poi.ss.usermodel.DataValidationConstraint;
+import org.apache.poi.ss.usermodel.DataValidationHelper;
+import org.apache.poi.ss.util.CellRangeAddressList;
 import org.apache.poi.ss.util.CellUtil;
-import org.apache.poi.xssf.usermodel.XSSFCell;
-import org.apache.poi.xssf.usermodel.XSSFRow;
-import org.apache.poi.xssf.usermodel.XSSFSheet;
-import org.apache.poi.xssf.usermodel.XSSFWorkbook;
+import org.apache.poi.xssf.usermodel.*;
 
+import javax.servlet.ServletOutputStream;
+import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 import java.io.OutputStream;
 import java.util.ArrayList;
@@ -19,11 +23,12 @@ public class UserExcelExporter {
     private final XSSFWorkbook workbook;
     private final XSSFSheet sheet;
     private final ArrayList<String> headers;
+    private int numRow = 0;
 
     public UserExcelExporter(List<User> users) {
         this.users = users;
         workbook = new XSSFWorkbook();
-        sheet = workbook.createSheet("list1");
+        sheet = workbook.createSheet("ListOfUsers");
         headers = new ArrayList<>();
         headers.add("id");
         headers.add("name");
@@ -35,8 +40,9 @@ public class UserExcelExporter {
     }
 
     private void writeHeaderRows() {
-        final XSSFRow rowHead = sheet.createRow(0);
-//        sheet.createFreezePane(1, 1);
+        final XSSFRow rowHead = sheet.createRow(numRow);
+//        sheet.createFreezePane(1, 29, 0, 1);//зафиксирован 1 столбец
+        sheet.createFreezePane(7, 1, 0, 1);//зафиксирована шапка
 
         for (int i = 0; i < headers.size(); i++) {
             final XSSFCell cell = rowHead.createCell(i);
@@ -46,48 +52,76 @@ public class UserExcelExporter {
     }
 
     private void writeDataRows() {
-        for (int row = 1; row < users.size(); row++) {
-            final XSSFRow dataRow = sheet.createRow(row);
-            final User user = users.get(row);
+        final XSSFCreationHelper helper = workbook.getCreationHelper();
+        final XSSFCellStyle styleDate = workbook.createCellStyle();
+        styleDate.setDataFormat(
+                helper.createDataFormat().getFormat("yyyy-MM-dd HH:mm:ss")
+        );
+
+        final XSSFCellStyle styleWrap = workbook.createCellStyle();
+        styleWrap.setWrapText(true);
+
+        numRow++;
+
+        for (User value : users) {
+            final XSSFRow dataRow = sheet.createRow(numRow);
+            numRow++;
 
             final XSSFCell cellId = dataRow.createCell(0);
             cellId.setCellType(CellType.NUMERIC);
-            cellId.setCellValue(user.getId());
+            cellId.setCellValue(value.getId());
 
             final XSSFCell cellName = dataRow.createCell(1);
             cellName.setCellType(CellType.STRING);
-            cellName.setCellValue(user.getName());
+            cellName.setCellValue(value.getName());
 
             final XSSFCell cellPass = dataRow.createCell(2);
             cellPass.setCellType(CellType.STRING);
-            cellPass.setCellValue(user.getPassword());
+            cellPass.setCellValue(value.getPassword());
 
             final XSSFCell cellEmail = dataRow.createCell(3);
             cellEmail.setCellType(CellType.STRING);
-            cellEmail.setCellValue(user.getEmail());
+            cellEmail.setCellValue(value.getEmail());
 
             final XSSFCell cellIsRem = dataRow.createCell(4);
             cellIsRem.setCellType(CellType.NUMERIC);
-            cellIsRem.setCellValue(user.getIsRememberMe());
+            cellIsRem.setCellValue(value.getIsRememberMe());
 
             final XSSFCell cellCr = dataRow.createCell(5);
-//            cellCr.setCellType(CellType.STRING);
-            cellCr.setCellValue(user.getCreatedAt());
-            CellUtil.setCellStyleProperty(
-                    cellCr,
-                    CellUtil.DATA_FORMAT,
-                    HSSFDataFormat.getBuiltinFormat("yyyy-MM-dd HH:mm:ss")
-            );
+            cellCr.setCellValue(value.getCreatedAt());
+            cellCr.setCellStyle(styleDate);
+            //настройка ниже не работает
+//            CellUtil.setCellStyleProperty(
+//                    cellCr,
+//                    CellUtil.DATA_FORMAT,
+//                    HSSFDataFormat.getBuiltinFormat("yyyy-MM-dd HH:mm:ss")
+//            );
 
             final XSSFCell cellUp = dataRow.createCell(6);
-//            cellUp.setCellType(CellType.STRING);
-            cellUp.setCellValue(user.getCreatedAt());
-            CellUtil.setCellStyleProperty(
-                    cellCr,
-                    CellUtil.DATA_FORMAT,
-                    HSSFDataFormat.getBuiltinFormat("yyyy-MM-dd HH:mm:ss")
-            );
+            cellUp.setCellValue(value.getCreatedAt());
+            cellUp.setCellStyle(styleDate);
         }
+
+        //свернуть строки
+        sheet.groupRow(2, 5);
+        sheet.setRowGroupCollapsed(2, true);
+
+        //свернуть колонки
+//        sheet.groupColumn(0, 3);
+//        sheet.setColumnGroupCollapsed(0, true);
+
+        // выпадающий список
+        String [] list = {"Neonsoft", "Huaxin", "SAP", "Haihui"};
+        final XSSFRow listRow = sheet.createRow(numRow);
+        final XSSFCell listCell = listRow.createCell(0);
+        listCell.setCellValue ("Пожалуйста, выберите");
+
+        DataValidationHelper validationHelper = sheet.getDataValidationHelper();
+        CellRangeAddressList regions = new CellRangeAddressList(0,numRow,0,0);
+        DataValidationConstraint constraint = validationHelper.createExplicitListConstraint(list);
+        DataValidation  dataValidation = validationHelper.createValidation(constraint, regions);
+        dataValidation.setSuppressDropDownArrow(true);
+        sheet.addValidationData(dataValidation);
     }
 
     public void exportToOutputStream(OutputStream outputStream) {
@@ -97,6 +131,7 @@ public class UserExcelExporter {
         try {
             workbook.write(outputStream);
             workbook.close();
+
         } catch (IOException e) {
             e.printStackTrace();//add custom ex
         }
