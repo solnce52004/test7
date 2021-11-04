@@ -2,17 +2,13 @@ package dev.example.test7.exporters;
 
 import dev.example.test7.entities.User;
 import dev.example.test7.exceptions.custom_exceptions.UploadException;
-import org.apache.poi.hssf.usermodel.*;
 import org.apache.poi.ss.usermodel.CellType;
 import org.apache.poi.ss.usermodel.DataValidation;
 import org.apache.poi.ss.usermodel.DataValidationConstraint;
 import org.apache.poi.ss.usermodel.DataValidationHelper;
 import org.apache.poi.ss.util.CellRangeAddressList;
-import org.apache.poi.ss.util.CellUtil;
 import org.apache.poi.xssf.usermodel.*;
 
-import javax.servlet.ServletOutputStream;
-import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 import java.io.OutputStream;
 import java.util.ArrayList;
@@ -103,13 +99,13 @@ public class UserExcelExporter {
         }
 
         //свернуть строки
-        sheet.groupRow(2, 5);
-        sheet.setRowGroupCollapsed(2, true);
+//        sheet.groupRow(2, 5);
+//        sheet.setRowGroupCollapsed(2, true);
 
         //свернуть колонки
 //        sheet.groupColumn(0, 3);
 //        sheet.setColumnGroupCollapsed(0, true);
-
+/*
         // выпадающий список
         String [] list = {"Neonsoft", "Huaxin", "SAP", "Haihui"};
         final XSSFRow listRow = sheet.createRow(numRow);
@@ -122,6 +118,7 @@ public class UserExcelExporter {
         DataValidation  dataValidation = validationHelper.createValidation(constraint, regions);
         dataValidation.setSuppressDropDownArrow(true);
         sheet.addValidationData(dataValidation);
+        */
     }
 
     public void exportToOutputStream(OutputStream outputStream) {
@@ -133,7 +130,8 @@ public class UserExcelExporter {
             workbook.close();
 
         } catch (IOException e) {
-            e.printStackTrace();//add custom ex
+            throw new UploadException("Could not write to outputStream", e);
+//            e.printStackTrace();//add custom ex
         }
     }
 }

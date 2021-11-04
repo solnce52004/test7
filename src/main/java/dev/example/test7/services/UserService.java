@@ -5,12 +5,14 @@ import dev.example.test7.repo.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import javax.transaction.Transactional;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
 @Service
+@Transactional
 public class UserService implements BaseCrudService<User> {
 
     private final UserRepository userRepository;
@@ -52,5 +54,9 @@ public class UserService implements BaseCrudService<User> {
     @Override
     public void delete(Long id) {
         userRepository.deleteById(id);
+    }
+
+    public void saveList(List<User> users) {
+        users.forEach(this::save);
     }
 }

@@ -5,6 +5,7 @@ import dev.example.test7.constants.View;
 import dev.example.test7.entities.User;
 import dev.example.test7.exceptions.custom_exceptions.UploadException;
 import dev.example.test7.exporters.UserExcelExporter;
+import dev.example.test7.exporters.UserExcelImporter;
 import dev.example.test7.helpers.UploadFilenameFormatter;
 import dev.example.test7.services.UploadService;
 import dev.example.test7.services.UserService;
@@ -215,8 +216,12 @@ public class FileUploadMultipleController {
             BindingResult bindingResult,
             RedirectAttributes redirectAttributes
     ) {
-        String filename = uploadService.store(file);
-        log.info(filename);
+//        String filename = uploadService.store(file);
+//        log.info(filename);
+
+        final UserExcelImporter importer = new UserExcelImporter(file);
+        final List<User> users = importer.parseFileToUsersList();
+        userService.saveList(users);
 
         //TODO: добавить кастомные ошибки и валидацию
 //        redirectAttributes.addFlashAttribute("errorsImport", new ArrayList<>());

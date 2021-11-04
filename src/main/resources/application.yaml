@@ -27,6 +27,15 @@ spring:
   jpa:
     database-platform: "org.hibernate.dialect.MySQL8Dialect"
     generate-ddl: true
+
+    properties:
+      hibernate:
+        default_batch_fetch_size: 20
+        jdbc:
+          batch_size: 10
+          order_inserts: true
+          order_updates: true
+
 #    show-sql: true
 
 #    hibernate:
