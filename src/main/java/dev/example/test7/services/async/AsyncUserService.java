@@ -1,4 +1,4 @@
-package dev.example.test7.services;
+package dev.example.test7.services.async;
 
 import dev.example.test7.dto.UserDTO;
 import lombok.extern.log4j.Log4j2;

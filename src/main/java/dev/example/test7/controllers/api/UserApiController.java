@@ -1,7 +1,7 @@
 package dev.example.test7.controllers.api;
 
 import dev.example.test7.entities.User;
-import dev.example.test7.services.UserService;
+import dev.example.test7.services.by_entities.UserService;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -18,11 +18,11 @@ import java.util.List;
 @RequestMapping("/api/v1")
 @Api(value = "UserController")
 
-public class UserController {
+public class UserApiController {
     private final UserService userService;
 
     @Autowired
-    public UserController(UserService userService) {
+    public UserApiController(UserService userService) {
         this.userService = userService;
     }
 

@@ -1,4 +1,4 @@
-package dev.example.test7.services;
+package dev.example.test7.services.by_entities;
 
 import dev.example.test7.entities.User;
 

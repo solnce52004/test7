@@ -1,4 +1,4 @@
-package dev.example.test7.services;
+package dev.example.test7.services.by_entities;
 
 import dev.example.test7.entities.User;
 import dev.example.test7.repo.UserRepository;
@@ -6,10 +6,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import javax.transaction.Transactional;
-import java.util.ArrayList;
 import java.util.List;
-import java.util.stream.Collectors;
-import java.util.stream.Stream;
 
 @Service
 @Transactional

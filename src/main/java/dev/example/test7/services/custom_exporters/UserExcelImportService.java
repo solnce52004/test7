@@ -1,15 +1,14 @@
-package dev.example.test7.exporters;
+package dev.example.test7.services.custom_exporters;
 
 import dev.example.test7.entities.User;
 import dev.example.test7.exceptions.custom_exceptions.UploadException;
-import dev.example.test7.services.UserService;
 import lombok.extern.log4j.Log4j2;
 import org.apache.poi.openxml4j.exceptions.InvalidFormatException;
 import org.apache.poi.openxml4j.opc.OPCPackage;
-import org.apache.poi.ss.usermodel.Cell;
 import org.apache.poi.ss.usermodel.Row;
 import org.apache.poi.xssf.usermodel.XSSFSheet;
 import org.apache.poi.xssf.usermodel.XSSFWorkbook;
+import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.io.IOException;
@@ -17,17 +16,16 @@ import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.List;
 
-@Log4j2
-public class UserExcelImporter {
-
-    private final MultipartFile file;
+@Service
+public class UserExcelImportService implements BaseImporter {
     private final List<User> users = new ArrayList<>();
 
-    public UserExcelImporter(MultipartFile file) {
-        this.file = file;
-    }
+    @Override
+    public List<User> parseFileToUsersList(MultipartFile file) {
+        if (file.isEmpty()) {
+            throw new UploadException("The supplied file was empty (zero bytes long)");
+        }
 
-    public List<User> parseFileToUsersList() {
         try (InputStream input = file.getInputStream()) {
 //            if (!input.markSupported()) {
 //                throw new UploadException("File format not supported");

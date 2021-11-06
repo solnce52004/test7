@@ -1,31 +1,33 @@
-package dev.example.test7.exporters;
+package dev.example.test7.services.custom_exporters;
 
 import dev.example.test7.entities.User;
 import dev.example.test7.exceptions.custom_exceptions.UploadException;
 import org.apache.poi.ss.usermodel.CellType;
-import org.apache.poi.ss.usermodel.DataValidation;
-import org.apache.poi.ss.usermodel.DataValidationConstraint;
-import org.apache.poi.ss.usermodel.DataValidationHelper;
-import org.apache.poi.ss.util.CellRangeAddressList;
 import org.apache.poi.xssf.usermodel.*;
+import org.springframework.stereotype.Service;
 
 import java.io.IOException;
 import java.io.OutputStream;
 import java.util.ArrayList;
 import java.util.List;
 
-public class UserExcelExporter {
-    private final List<User> users;
-    private final XSSFWorkbook workbook;
-    private final XSSFSheet sheet;
-    private final ArrayList<String> headers;
+@Service
+public class UserExcelExportService implements BaseExporter {
+    private List<User> users;
+    private XSSFWorkbook workbook;
+    private XSSFSheet sheet;
+    private final ArrayList<String> headers = new ArrayList<>();
     private int numRow = 0;
 
-    public UserExcelExporter(List<User> users) {
+    @Override
+    public void init(List<User> users) {
         this.users = users;
-        workbook = new XSSFWorkbook();
-        sheet = workbook.createSheet("ListOfUsers");
-        headers = new ArrayList<>();
+        this.workbook = new XSSFWorkbook();
+        this.sheet = workbook.createSheet("ListOfUsers");
+    }
+
+    @Override
+    public void writeHeaderRows() {
         headers.add("id");
         headers.add("name");
         headers.add("password");
@@ -33,9 +35,7 @@ public class UserExcelExporter {
         headers.add("is_remember_me");
         headers.add("created_at");
         headers.add("updated_at");
-    }
 
-    private void writeHeaderRows() {
         final XSSFRow rowHead = sheet.createRow(numRow);
 //        sheet.createFreezePane(1, 29, 0, 1);//зафиксирован 1 столбец
         sheet.createFreezePane(7, 1, 0, 1);//зафиксирована шапка
@@ -47,7 +47,8 @@ public class UserExcelExporter {
         }
     }
 
-    private void writeDataRows() {
+    @Override
+    public void writeDataRows() {
         final XSSFCreationHelper helper = workbook.getCreationHelper();
         final XSSFCellStyle styleDate = workbook.createCellStyle();
         styleDate.setDataFormat(
@@ -121,7 +122,9 @@ public class UserExcelExporter {
         */
     }
 
-    public void exportToOutputStream(OutputStream outputStream) {
+    @Override
+    public void exportToOutputStream(List<User> users, OutputStream outputStream) {
+        init(users);
         writeHeaderRows();
         writeDataRows();
 

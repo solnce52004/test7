@@ -1,7 +1,7 @@
 package dev.example.test7.controllers.api;
 
 import dev.example.test7.dto.UserDTO;
-import dev.example.test7.services.AsyncUserService;
+import dev.example.test7.services.async.AsyncUserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
@@ -9,12 +9,12 @@ import java.util.concurrent.CompletableFuture;
 
 @RestController
 @RequestMapping("/api/v1/async")
-public class AsyncUserController {
+public class AsyncUserApiController {
 
     private final AsyncUserService asyncUserService;
 
     @Autowired
-    public AsyncUserController(AsyncUserService asyncUserService) {
+    public AsyncUserApiController(AsyncUserService asyncUserService) {
         this.asyncUserService = asyncUserService;
     }
 

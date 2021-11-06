@@ -3,7 +3,7 @@ package dev.example.test7.controllers.mvc;
 import dev.example.test7.constants.Route;
 import dev.example.test7.constants.View;
 import dev.example.test7.exceptions.custom_exceptions.UploadException;
-import dev.example.test7.services.UploadService;
+import dev.example.test7.services.upload.UploadService;
 import lombok.extern.log4j.Log4j2;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;

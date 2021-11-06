@@ -4,8 +4,7 @@
     <title>Загрузка файлов</title>
     <meta http-equiv="Content-Type" content="text/html; charset=UTF-8"/>
 </head>
-<link
-        type="text/css"
+<link type="text/css"
         media="all"
         rel="stylesheet"
         th:href="@{/css/style.css}">
@@ -16,34 +15,29 @@
 
 <body>
 <div class="container">
+    <br/>
     <div class="row">
-        <div class="col-md-offset-3 col-md-6">
-
-            <form method="post"
+        <div class="col">
+            <form method="POST"
                   th:action="@{/upload-file-multiple}"
-                  enctype="multipart/form-data"
-                  class="form-horizontal">
-
-                <span class="heading">Загрузка нескольких файлов</span>
-
+                  enctype="multipart/form-data">
+                <span class="h4">Загрузка нескольких файлов</span>
                 <div class="form-group">
                     <input type="file"
                            id="file"
                            name="file" multiple>
                 </div>
-                <br/>
                 <div th:if="${!errors.isEmpty()}">
                     <div class="alert alert-warning" th:text="*{errors.get(0)}"></div>
                 </div>
-                <br/>
                 <div class="form-group">
                     <button type="submit" class="btn btn-default">Сохранить</button>
                 </div>
             </form>
-
         </div>
     </div>
 
+    <hr>
     <p>Сохраненные только что файлы:</p>
     <ul th:if="${!uploadedFiles.isEmpty()}" th:each="uploaded : ${uploadedFiles}">
         <li class="alert alert-warning" th:text="*{uploaded}"></li>
@@ -56,57 +50,82 @@
         </a>
     </ul>
 
-<!--    <form  method="get"-->
-<!--           th:action="@{/delete-uploads}"-->
-<!--           class="form-horizontal">-->
-<!--        <button>Удалить всю папку uploads</button>-->
-<!--    </form>-->
+    <!--    <form  method="get"-->
+    <!--           th:action="@{/delete-uploads}"-->
+    <!--           class="form-horizontal">-->
+    <!--        <button>Удалить всю папку uploads</button>-->
+    <!--    </form>-->
 
-    <div class="row"><hr></div>
-
-    <div class="row form-horizontal">
-        <div class="col-md-offset-3 col-md-6">
-            <span class="h4">Cкачать всех пользователей в формате .xlsx</span>
-            <br/>
-            <br/>
-            <a th:href="@{/users/export}" class="btn btn-default">Экспортировать</a>
-        </div>
-    </div>
-
-    <div class="row"><hr></div>
+    <hr>
 
     <div class="row">
-        <div class="col-md-offset-3 col-md-6">
+        <div class="col">
+            <span class="h4">Cкачать всех пользователей в формате .xlsx</span>
+            <a th:href="@{/users/export/excel}" class="btn btn-default">Экспорт</a>
 
-            <form method="post"
-                  th:action="@{/users/import}"
-                  enctype="multipart/form-data"
-                  class="form-horizontal">
+            <hr>
 
+            <form method="POST"
+                  th:action="@{/users/import/excel}"
+                  enctype="multipart/form-data">
                 <div>
-                    <span class="h4">Импорт пользователей в БД</span>
-                    <br/>
-                    <span>(загрузите файл в формате .xlsx)</span>
+                    <span class="h4">Импорт пользователей в БД (загрузите файл в формате .xlsx)</span>
                 </div>
-                <br/><br/>
-
+                <br/>
                 <div class="form-group">
                     <input type="file"
-                           id="fileImport"
-                           name="fileImport">
+                           id="fileImportExcel"
+                           name="fileImportExcel">
                 </div>
-                <br/>
-                <div th:if="${!errors.isEmpty()}">
-                    <div class="alert alert-warning" th:text="*{errors.get(0)}"></div>
+                <div th:if="${!errorsImportExcel.isEmpty()}">
+                    <div class="alert alert-warning" th:text="*{errorsImportExcel.get(0)}"></div>
                 </div>
-                <br/>
                 <div class="form-group">
-                    <button type="submit" class="btn btn-default">Импортировать</button>
+                    <button type="submit" class="btn btn-default">Импорт</button>
                 </div>
             </form>
+        </div>
+    </div>
+
+    <hr>
+
+    <div class="row">
+        <div class="col">
+            <span class="h4">Cкачать всех пользователей в формате .pdf (Библиотека OpenPDF)</span>
+            <a th:href="@{/users/export/open-pdf}" class="btn btn-default">Экспорт</a>
+
+            <hr>
+
+            <span class="h4">Cкачать всех пользователей в формате .pdf (Библиотека iTextPDF)</span>
+            <a th:href="@{/users/export/itextpdf-pdf}" class="btn btn-default">Экспорт</a>
+
+            <hr>
+
+            <!--            <form method="POST"-->
+            <!--                  th:action="@{/users/import/pdf}"-->
+            <!--                  enctype="multipart/form-data">-->
+            <!--                <div>-->
+            <!--                    <span class="h4">Импорт пользователей в БД</span>-->
+            <!--                    <br/>-->
+            <!--                    <span>(загрузите файл в формате .pdf)</span>-->
+            <!--                </div>-->
+            <!--                <br/>-->
+            <!--                <div class="form-group">-->
+            <!--                    <input type="file"-->
+            <!--                           id="fileImportPdf"-->
+            <!--                           name="fileImportPdf">-->
+            <!--                </div>-->
+            <!--                <div th:if="${!errorsImportPdf.isEmpty()}">-->
+            <!--                    <div class="alert alert-warning" th:text="*{errorsImportPdf.get(0)}"></div>-->
+            <!--                </div>-->
+            <!--                <div class="form-group">-->
+            <!--                    <button type="submit" class="btn btn-default">Импорт</button>-->
+            <!--                </div>-->
+            <!--            </form>-->
 
         </div>
     </div>
+
 </div>
 </body>
 </html>

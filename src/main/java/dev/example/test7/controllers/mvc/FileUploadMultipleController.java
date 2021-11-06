@@ -2,20 +2,14 @@ package dev.example.test7.controllers.mvc;
 
 import dev.example.test7.constants.Route;
 import dev.example.test7.constants.View;
-import dev.example.test7.entities.User;
 import dev.example.test7.exceptions.custom_exceptions.UploadException;
-import dev.example.test7.exporters.UserExcelExporter;
-import dev.example.test7.exporters.UserExcelImporter;
 import dev.example.test7.helpers.UploadFilenameFormatter;
-import dev.example.test7.services.UploadService;
-import dev.example.test7.services.UserService;
+import dev.example.test7.services.upload.UploadService;
+import dev.example.test7.services.by_entities.UserService;
 import lombok.extern.log4j.Log4j2;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.core.io.Resource;
-import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
-import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
@@ -31,7 +25,6 @@ import java.io.File;
 import java.io.IOException;
 import java.net.URI;
 import java.util.ArrayList;
-import java.util.List;
 
 @Controller
 @Log4j2
@@ -75,6 +68,20 @@ public class FileUploadMultipleController {
         if (!model.containsAttribute("errors")) {
             model.addAttribute(
                     "errors",
+                    new ArrayList<>()
+            );
+        }
+
+        if (!model.containsAttribute("errorsImportExcel")) {
+            model.addAttribute(
+                    "errorsImportExcel",
+                    new ArrayList<>()
+            );
+        }
+
+        if (!model.containsAttribute("errorsImportPdf")) {
+            model.addAttribute(
+                    "errorsImportPdf",
                     new ArrayList<>()
             );
         }
@@ -151,93 +158,7 @@ public class FileUploadMultipleController {
         uploadService.deleteAll();
     }
 
-    /**
-     * 2!!!
-     */
-    @GetMapping(path = "/get-resource-by-fid/2/{fid}")
-    @ResponseBody
-    public ResponseEntity<Object> UrlResource(
-            @PathVariable String fid
-    ) throws IOException {
-        final Resource resource = uploadService.getResourceByFid(fid);
-        final String filename = uploadFilenameFormatter.parseBaseFilenameByFormattedFilename(resource.getFilename());
-
-        final HttpHeaders headers = new HttpHeaders();
-        headers.add(
-                "Content-Disposition",
-                String.format("attachment; filename=\"%s\"", filename)
-        );
-        headers.add(
-                "Cache-Control",
-                "no-cache, no-store, must-revalidate"
-        );
-        headers.add("Pragma", "no-cache");
-        headers.add("Expires", "0");
-
-        return ResponseEntity
-                .ok()
-                .headers(headers)
-                .contentLength(resource.contentLength())
-                .contentType(MediaType.parseMediaType("application/text"))
-                .body(resource);
-    }
-
-
-    @GetMapping("/users/export")
-    public void exportUsersToExcel(
-            HttpServletResponse response
-    ) {
-        String filename = "users.xlsx";
-//        response.setContentType("application/vnd.ms-excel");
-        response.setContentType("application/octet-stream");
-        response.setHeader(
-                "Content-Disposition",
-                String.format("attachment; filename=\"%s\"", filename)
-        );
-
-        List<User> users = userService.findAll();
-//        List<User> users = userService.findAllByName("admin");
-        UserExcelExporter exporter = new UserExcelExporter(users);
-
-        try (ServletOutputStream outputStream = response.getOutputStream()) {
-            exporter.exportToOutputStream(outputStream);
-        } catch (IOException e) {
-            throw new UploadException("Could not get outputStream", e);
-        }
-    }
-
-    @PostMapping(
-            path = "/users/import",
-            consumes = MediaType.MULTIPART_FORM_DATA_VALUE
-    )
-    public ModelAndView importUsersFromExcelToDB(
-            @RequestParam("fileImport") MultipartFile file,
-            ModelAndView model,
-            BindingResult bindingResult,
-            RedirectAttributes redirectAttributes
-    ) {
-//        String filename = uploadService.store(file);
-//        log.info(filename);
-
-        final UserExcelImporter importer = new UserExcelImporter(file);
-        final List<User> users = importer.parseFileToUsersList();
-        userService.saveList(users);
-
-        //TODO: добавить кастомные ошибки и валидацию
-//        redirectAttributes.addFlashAttribute("errorsImport", new ArrayList<>());
-        redirectAttributes.addFlashAttribute("errors", new ArrayList<>());
-
-        final RedirectView redirectView = new RedirectView(Route.ROUTE_UPLOAD_MULTIPLE_INDEX);
-        redirectView.setStatusCode(HttpStatus.MOVED_PERMANENTLY);
-
-        final ModelAndView mav = new ModelAndView();
-        mav.setView(redirectView);
-
-        return mav;
-    }
-
-
-    ////////////////////////////////////////
+     ////////////////////////////////////////
     @ExceptionHandler(UploadException.class)
     public String uploadExceptionHandler(
             UploadException e,

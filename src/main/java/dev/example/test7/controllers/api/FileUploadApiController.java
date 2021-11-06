@@ -2,7 +2,7 @@ package dev.example.test7.controllers.api;
 
 import dev.example.test7.constants.Route;
 import dev.example.test7.helpers.UploadFilenameFormatter;
-import dev.example.test7.services.UploadService;
+import dev.example.test7.services.upload.UploadService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.io.Resource;
 import org.springframework.http.HttpHeaders;
@@ -17,12 +17,12 @@ import java.util.ArrayList;
 
 @RestController
 @RequestMapping("/api/v1")
-public class RestFileUploadController {
+public class FileUploadApiController {
     private final UploadService uploadService;
     private final UploadFilenameFormatter uploadFilenameFormatter;
 
     @Autowired
-    public RestFileUploadController(UploadService uploadService, UploadFilenameFormatter uploadFilenameFormatter) {
+    public FileUploadApiController(UploadService uploadService, UploadFilenameFormatter uploadFilenameFormatter) {
         this.uploadService = uploadService;
         this.uploadFilenameFormatter = uploadFilenameFormatter;
     }

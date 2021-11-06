@@ -43,7 +43,6 @@ public class User implements Serializable {
     private Integer isRememberMe;
 
     @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd hh:mm:ss")
-
     @Temporal(TemporalType.TIMESTAMP)
     @org.hibernate.annotations.Generated(GenerationTime.ALWAYS) //генерит время +3
     @Column(name="created_at", updatable = false, insertable = false, columnDefinition = "TIMESTAMP")
