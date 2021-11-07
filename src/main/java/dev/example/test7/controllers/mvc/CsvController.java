@@ -25,7 +25,7 @@ public class CsvController {
     }
 
     @GetMapping("/users/export/extended-mycsv-csv")
-    public ModelAndView exportUsersToPdfByExtendedCsv(
+    public ModelAndView exportUsersToCsv(
             Model model,
             HttpServletResponse response
     ) {

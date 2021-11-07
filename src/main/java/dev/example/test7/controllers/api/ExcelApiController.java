@@ -1,7 +1,6 @@
 package dev.example.test7.controllers.api;
 
 import dev.example.test7.entities.User;
-import dev.example.test7.exceptions.custom_exceptions.UploadException;
 import dev.example.test7.services.by_entities.UserService;
 import dev.example.test7.services.custom_exporters.UserExcelExportService;
 import dev.example.test7.services.custom_exporters.UserExcelImportService;
@@ -9,7 +8,7 @@ import dev.example.test7.services.upload.FileSystemUploadService;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.core.io.FileSystemResource;
+import org.springframework.core.io.InputStreamResource;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
@@ -17,9 +16,6 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
-import java.io.File;
-import java.io.IOException;
-import java.io.OutputStream;
 import java.util.List;
 
 @RestController
@@ -45,9 +41,11 @@ public class ExcelApiController {
 
     @ApiOperation(value = "Экспорт пользователей в файл формата .xlsx")
     @GetMapping("/users/export/excel")
-    public ResponseEntity<Object> exportUsersToExcel() throws IOException {
+    public ResponseEntity<Object> exportUsersToExcel() {
+
         final HttpHeaders headers = new HttpHeaders();
         String filename = "users.xlsx";
+
 //        response.setContentType("application/vnd.ms-excel");
         headers.setContentType(MediaType.APPLICATION_OCTET_STREAM);
         headers.set(
@@ -57,22 +55,13 @@ public class ExcelApiController {
 
         List<User> users = userService.findAll();
 //        List<User> users = userService.findAllByName("admin");
-
-        final File file = fileSystemUploadService.resolveFormatted(filename).toFile();
-        final FileSystemResource resource = new FileSystemResource(file);
-
-        try (OutputStream outputStream = resource.getOutputStream()) {
-            userExcelExportService.exportToOutputStream(users, outputStream);
-        } catch (IOException e) {
-            throw new UploadException("Could not get outputStream", e);
-        }
+        InputStreamResource body = userExcelExportService.getInputStreamResource(users);
 
         return ResponseEntity
                 .ok()
                 .headers(headers)
-                .contentLength(resource.contentLength())
-//                .contentType(MediaType.parseMediaType("application/text"))
-                .body(resource);
+//                .contentLength(body.contentLength())//ошибка, вытащить размер
+                .body(body);
     }
 
     @ApiOperation(value = "Импорт пользователей из файл формата .xlsx в базу данных")
