@@ -116,6 +116,9 @@ dependencies {
     implementation 'com.github.librepdf:openpdf-fonts-extra:1.3.26'
     //pdf
     implementation 'com.itextpdf:itext7-core:7.2.0'
+
+    //csv
+    implementation 'org.apache.commons:commons-csv:1.9.0'
 }
 
 test {

@@ -3,15 +3,17 @@ package dev.example.test7.controllers.mvc;
 import dev.example.test7.constants.Route;
 import dev.example.test7.entities.User;
 import dev.example.test7.exceptions.custom_exceptions.UploadException;
+import dev.example.test7.services.by_entities.UserService;
 import dev.example.test7.services.custom_exporters.UserITextPdfExportService;
 import dev.example.test7.services.custom_exporters.UserOpenPdfExportService;
-import dev.example.test7.services.by_entities.UserService;
 import lombok.extern.log4j.Log4j2;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.MediaType;
 import org.springframework.stereotype.Controller;
+import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.servlet.ModelAndView;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import javax.servlet.ServletOutputStream;
@@ -81,6 +83,19 @@ public class PdfController {
         }
     }
 
+    @GetMapping("/users/export/extended-openpdf-pdf")
+    public ModelAndView exportUsersToPdfByExtendedOpenPdf(
+            Model model,
+            HttpServletResponse response
+    ) {
+        model.addAttribute("users", userService.findAll());
+        response.setContentType(MediaType.APPLICATION_PDF_VALUE);
+        response.setHeader(
+                "Content-Disposition",
+                "attachment; filename=users.pdf"
+        );
+        return new ModelAndView("pdfUsersView");
+    }
 /*
 
     @PostMapping(

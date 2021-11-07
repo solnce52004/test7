@@ -48,12 +48,13 @@ public class ExcelController {
     public void exportUsersToExcel(
             HttpServletResponse response
     ) {
-        String filename = "users";
-//        response.setContentType("application/vnd.ms-excel");
+//        String filename = "users";
+        String filename = "users.xlsx";//так опрделится формат
+//        response.setContentType("application/vnd.ms-excel");//отдаем стрим - не прочитает
         response.setContentType("application/octet-stream");
         response.setHeader(
                 "Content-Disposition",
-                String.format("attachment; filename=\"%s\".xlsx", filename)
+                String.format("attachment; filename=\"%s\"", filename)
         );
 
         List<User> users = userService.findAll();
