@@ -1,5 +1,6 @@
 package dev.example.test7.shell;
 
+import dev.example.test7.controllers.domain.UploadController;
 import dev.example.test7.dto.UserDTO;
 import org.springframework.shell.Availability;
 import org.springframework.shell.standard.*;
@@ -15,7 +16,12 @@ import javax.validation.constraints.Min;
 @ShellCommandGroup("Hello Group")
 public class HelloCommand {
 
+    private final UploadController uploadController;
     private boolean shutdownAvailable;
+
+    public HelloCommand(UploadController uploadController) {
+        this.uploadController = uploadController;
+    }
 
     /**
      * count --param1 5 --param2 6
@@ -66,15 +72,15 @@ public class HelloCommand {
     @ShellMethod("Terminate the system.")
 //    @ShellMethodAvailability("shutdownAvailabilityCheck") //либо тут, либо над методом проверки
     public String shutdown(
-            @ShellOption(arity=1, defaultValue="false")
-            boolean force
+            @ShellOption(arity = 1, defaultValue = "false")
+                    boolean force
     ) {
         return "You said " + force;
     }
 
     /////////////////
     @ShellMethodAvailability({"shutdown"})
-    public Availability shutdownAvailabilityCheck(){
+    public Availability shutdownAvailabilityCheck() {
         return shutdownAvailable
                 ? Availability.available()
                 : Availability.unavailable("**** you can not shutdown system! Count command not used or returned not 50! ****");
@@ -88,6 +94,14 @@ public class HelloCommand {
     @ShellMethod("Shows conversion using Spring converter")
     public String conversionExample(UserDTO user) {
         return user.toString();
+    }
+
+    @ShellMethod("Export users to excel file in uploads and return new filename")
+    public String exportUsersToExcelFile(
+            @ShellOption(help = "Имя фомируемого файла")
+                    String filename
+    ) {
+        return uploadController.exportAndSaveUsersToExcelFile(filename);
     }
 }
 
