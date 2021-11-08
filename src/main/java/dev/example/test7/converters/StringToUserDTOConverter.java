@@ -2,7 +2,9 @@ package dev.example.test7.converters;
 
 import dev.example.test7.dto.UserDTO;
 import org.springframework.core.convert.converter.Converter;
+import org.springframework.stereotype.Component;
 
+@Component
 public class StringToUserDTOConverter implements Converter<String, UserDTO> {
 
     @Override

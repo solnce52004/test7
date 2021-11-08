@@ -8,6 +8,7 @@ import io.swagger.annotations.ApiOperation;
 import jakarta.xml.bind.JAXBException;
 import lombok.extern.log4j.Log4j2;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.core.convert.ConversionService;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
@@ -123,6 +124,7 @@ public class TryHandlerExceptionApiController {
 
     //********
     @Autowired
+    @Qualifier("mvcConversionService")
     ConversionService conversionService;
 
     //string-to-user?user=1234,Peter,true

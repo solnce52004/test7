@@ -119,6 +119,9 @@ dependencies {
 
     //csv
     implementation 'org.apache.commons:commons-csv:1.9.0'
+
+    //shell
+    implementation 'org.springframework.shell:spring-shell-starter:2.0.1.RELEASE'
 }
 
 test {

@@ -4,7 +4,6 @@ import dev.example.test7.entities.User;
 import dev.example.test7.services.by_entities.UserService;
 import dev.example.test7.services.custom_exporters.UserExcelExportService;
 import dev.example.test7.services.custom_exporters.UserExcelImportService;
-import dev.example.test7.services.upload.FileSystemUploadService;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -25,18 +24,16 @@ public class ExcelApiController {
     private final UserService userService;
     private final UserExcelExportService userExcelExportService;
     private final UserExcelImportService userExcelImportService;
-    private final FileSystemUploadService fileSystemUploadService;
 
     @Autowired
     public ExcelApiController(
             UserService userService,
             UserExcelExportService userExcelExportService,
-            UserExcelImportService userExcelImportService,
-            FileSystemUploadService fileSystemUploadService) {
+            UserExcelImportService userExcelImportService
+    ) {
         this.userService = userService;
         this.userExcelExportService = userExcelExportService;
         this.userExcelImportService = userExcelImportService;
-        this.fileSystemUploadService = fileSystemUploadService;
     }
 
     @ApiOperation(value = "Экспорт пользователей в файл формата .xlsx")
