@@ -9,6 +9,7 @@ import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
@@ -32,6 +33,7 @@ public class UserApiController {
             produces = MediaType.APPLICATION_JSON_VALUE,
             consumes = MediaType.APPLICATION_JSON_VALUE
     )
+    @PreAuthorize("hasAuthority('writer')")
     public ResponseEntity<User> save(@RequestBody User user) {
         final HttpHeaders headers = new HttpHeaders();
 
@@ -48,6 +50,7 @@ public class UserApiController {
             path = "/user/{id}",
             produces = MediaType.APPLICATION_JSON_VALUE
     )
+    @PreAuthorize("hasAuthority('reader')")
     public ResponseEntity<User> getById(@PathVariable("id") Long id) {
         if (id == null) {
             return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
@@ -66,6 +69,7 @@ public class UserApiController {
             path = "/user",
             produces = MediaType.APPLICATION_JSON_VALUE
     )
+    @PreAuthorize("hasAuthority('reader')")
     public ResponseEntity<List<User>> getAll() {
         final List<User> users = userService.findAll();
         if (users.isEmpty()) {
@@ -80,6 +84,7 @@ public class UserApiController {
             path = "/users/{name}",
             produces = MediaType.APPLICATION_JSON_VALUE
     )
+    @PreAuthorize("hasAuthority('reader')")
     public ResponseEntity<List<User>> getAllByName(
             @PathVariable("name") String name
     ) {
@@ -98,6 +103,7 @@ public class UserApiController {
             consumes = MediaType.APPLICATION_JSON_VALUE,
             produces = MediaType.APPLICATION_JSON_VALUE
     )
+    @PreAuthorize("hasAuthority('writer')")
     public ResponseEntity<User> patch(
             @PathVariable("id") Long id,
             @RequestBody User user
@@ -124,6 +130,7 @@ public class UserApiController {
             consumes = MediaType.APPLICATION_JSON_VALUE,
             produces = MediaType.APPLICATION_JSON_VALUE
     )
+    @PreAuthorize("hasAuthority('writer')")
     public ResponseEntity<User> update(@Valid @RequestBody User user) {
         final HttpHeaders headers = new HttpHeaders();
         if (user == null) {
@@ -139,6 +146,7 @@ public class UserApiController {
             path = "/user/{id}",
             produces = MediaType.APPLICATION_JSON_VALUE
     )
+    @PreAuthorize("hasAuthority('writer')")
     public ResponseEntity<Object> deleteById(@PathVariable("id") Long id) {
         if (id == null) {
             return new ResponseEntity<>(HttpStatus.BAD_REQUEST);

@@ -16,6 +16,11 @@ databaseChangeLog:
                     primaryKeyName: users_pk
                     nullable: false
               - column:
+                  name: email
+                  type: VARCHAR(255)
+                  constraints:
+                    nullable: false
+              - column:
                   name: name
                   type: VARCHAR(255)
                   constraints:
@@ -26,14 +31,23 @@ databaseChangeLog:
                   constraints:
                     nullable: false
               - column:
-                  name: email
-                  type: VARCHAR(255)
-                  constraints:
-                    nullable: true
-              - column:
                   name: is_remember_me
                   type: INT
                   defaultValue: "0"
+                  constraints:
+                    nullable: false
+              - column:
+                  name: status
+                  type: VARCHAR(255)
+                  constraints:
+                    nullable: false
+                  defaultValue: "ACTIVE"
+              - column:
+                  name: role
+                  type: VARCHAR(20)
+                  constraints:
+                    nullable: false
+                  defaultValue: "USER"
               - column:
                   name: created_at
                   type: TIMESTAMP

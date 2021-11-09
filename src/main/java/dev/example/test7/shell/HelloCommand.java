@@ -96,6 +96,12 @@ public class HelloCommand {
         return user.toString();
     }
 
+    /**
+     * export-users-to-excel-file userssss
+     *
+     * - можно указать крону shell-задачу - ночью делать выгрузку
+     * - формировать отчет/данные и отправлять на апи другого ресурса
+     */
     @ShellMethod("Export users to excel file in uploads and return new filename")
     public String exportUsersToExcelFile(
             @ShellOption(help = "Имя фомируемого файла")

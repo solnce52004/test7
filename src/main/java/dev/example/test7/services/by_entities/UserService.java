@@ -7,6 +7,7 @@ import org.springframework.stereotype.Service;
 
 import javax.transaction.Transactional;
 import java.util.List;
+import java.util.Optional;
 
 @Service
 @Transactional
@@ -55,5 +56,9 @@ public class UserService implements BaseCrudService<User> {
 
     public void saveList(List<User> users) {
         users.forEach(this::save);
+    }
+
+    public Optional<User> findByEmail(String email){
+       return userRepository.findByEmail(email);
     }
 }

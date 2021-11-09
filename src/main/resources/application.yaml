@@ -101,4 +101,7 @@ logging:
       springframework.web: DEBUG
       hibernate: INFO
 
-
+jwt:
+  header: Authorization
+  secret: authsecret
+  expiration: 604800

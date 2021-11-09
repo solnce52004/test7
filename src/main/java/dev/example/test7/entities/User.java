@@ -1,6 +1,8 @@
 package dev.example.test7.entities;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
+import dev.example.test7.config.security.Role;
+import dev.example.test7.enums.UserStatus;
 import lombok.*;
 import org.hibernate.annotations.DynamicInsert;
 import org.hibernate.annotations.DynamicUpdate;
@@ -9,7 +11,6 @@ import org.hibernate.annotations.UpdateTimestamp;
 
 import javax.persistence.*;
 import java.io.Serializable;
-import java.sql.Timestamp;
 import java.util.Date;
 
 
@@ -30,17 +31,25 @@ public class User implements Serializable {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
+    @Column(name = "email", nullable = false)
+    private String email;
+
     @Column(name = "name", nullable = false)
     private String name;
 
     @Column(name = "password", nullable = false)
     private String password;
 
-    @Column(name = "email")
-    private String email;
-
     @Column(name = "is_remember_me")
     private Integer isRememberMe;
+
+    @Column(name = "role", nullable = false)
+    @Enumerated(EnumType.STRING)
+    private Role role;
+
+    @Column(name = "status", nullable = false)
+    @Enumerated(EnumType.STRING)
+    private UserStatus status;
 
     @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd hh:mm:ss")
     @Temporal(TemporalType.TIMESTAMP)
@@ -53,4 +62,8 @@ public class User implements Serializable {
     @UpdateTimestamp
     @Column(name="updated_at", insertable = false, columnDefinition = "TIMESTAMP")
     private Date updatedAt;
+
+    public boolean isActive(){
+       return getStatus().equals(UserStatus.ACTIVE);
+    }
 }

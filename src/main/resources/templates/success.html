@@ -1,0 +1,15 @@
+<!DOCTYPE HTML>
+<html xmlns:th="http://www.thymeleaf.org" lang="ru">
+<head>
+    <title>Success</title>
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8"/>
+</head>
+<body>
+Success!
+<div>
+    <form th:action="@{/auth/logout}" method="POST">
+        <button type="submit">Logout</button>
+    </form>
+</div>
+</body>
+</html>
