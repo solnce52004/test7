@@ -1,6 +1,6 @@
 package dev.example.test7.repo;
 
-import dev.example.test7.entities.User;
+import dev.example.test7.entity.User;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;

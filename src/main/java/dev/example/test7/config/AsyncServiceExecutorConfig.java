@@ -1,6 +1,6 @@
 package dev.example.test7.config;
 
-import dev.example.test7.exceptions.custom_handlers.CustomAsyncExceptionHandler;
+import dev.example.test7.exception.custom_handlers.CustomAsyncExceptionHandler;
 import org.springframework.aop.interceptor.AsyncUncaughtExceptionHandler;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;

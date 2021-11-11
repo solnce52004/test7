@@ -11,7 +11,6 @@ import org.springframework.context.annotation.ComponentScan;
 import org.springframework.context.annotation.PropertySource;
 import org.springframework.data.jpa.repository.config.EnableJpaRepositories;
 
-//@EnableWebMvc
 //@EnableAspectJAutoProxy(proxyTargetClass=true) // - отследить ошибки Async
 
 @SpringBootApplication(
@@ -22,9 +21,9 @@ import org.springframework.data.jpa.repository.config.EnableJpaRepositories;
                 JpaRepositoriesAutoConfiguration.class//иначе не видит репы
         }
 )
-@ComponentScan(basePackages = "dev")
-@EnableJpaRepositories("dev.example.test7.repo")//обязательно!
-@EntityScan("dev.example.test7.entities")
+@ComponentScan(basePackages = "dev.*")
+@EntityScan(basePackages = "dev.*")
+@EnableJpaRepositories(basePackages = "dev.*")
 @PropertySource(value = {"classpath:application.yaml"})
 
 public class Test7Application extends SpringBootServletInitializer {

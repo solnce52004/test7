@@ -1,7 +1,7 @@
 package dev.example.test7.config;
 
-import dev.example.test7.converters.StringToUserDTOConverter;
-import dev.example.test7.interceptors.CheckUserInterceptor;
+import dev.example.test7.converter.StringToUserDTOConverter;
+import dev.example.test7.interceptor.CheckUserInterceptor;
 import nz.net.ultraq.thymeleaf.layoutdialect.LayoutDialect;
 import org.springframework.context.MessageSource;
 import org.springframework.context.annotation.Bean;
@@ -72,8 +72,8 @@ public class WebMvcConfig implements WebMvcConfigurer {
 
     @Override
     public void configureMessageConverters(List<HttpMessageConverter<?>> converters) {
-//        converters.add(stringConverter());
-//        converters.add(mappingJackson2HttpMessageConverter());
+//        converter.add(stringConverter());
+//        converter.add(mappingJackson2HttpMessageConverter());
         converters.add(excelConverter());
     }
 

@@ -1,6 +1,6 @@
 package dev.example.test7.config;
 
-import dev.example.test7.swagger_plugins.EmailAnnotationPlugin;
+import dev.example.test7.swagger.EmailAnnotationPlugin;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Import;
@@ -24,7 +24,7 @@ public class SpringFoxConfig {
     public Docket api() {
         return new Docket(DocumentationType.SWAGGER_2)
                 .select()
-                .apis(RequestHandlerSelectors.basePackage("dev.example.test7.controllers"))
+                .apis(RequestHandlerSelectors.basePackage("dev.example.test7.controller"))
 //                .apis(RequestHandlerSelectors.any())
                 .paths(PathSelectors.any())
                 .build()

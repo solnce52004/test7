@@ -22,10 +22,6 @@
                    th:action="@{/upload-file}"
                    enctype="multipart/form-data"
                     class="form-horizontal">
-                <input
-                        type="hidden"
-                        th:name="${_csrf.parameterName}"
-                        th:value="${_csrf.token}" />
                 <span class="heading">Загрузка одного файла</span>
 
                 <div class="form-group">

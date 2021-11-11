@@ -26,7 +26,7 @@ public class DatabaseConfig {
     public LocalSessionFactoryBean sessionFactory(DataSource dataSource) {
         LocalSessionFactoryBean sessionFactory = new LocalSessionFactoryBean();
         sessionFactory.setDataSource(dataSource);
-        sessionFactory.setPackagesToScan("dev.example.test7.entities");
+        sessionFactory.setPackagesToScan("dev.example.test7.entity");
         sessionFactory.setAnnotatedPackages("dev.example.test7.repo");
         sessionFactory.setHibernateProperties(hibernateProperties());
 

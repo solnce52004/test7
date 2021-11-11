@@ -1,6 +1,6 @@
 package dev.example.test7.shell;
 
-import dev.example.test7.controllers.domain.UploadController;
+import dev.example.test7.controller.domain.UploadController;
 import dev.example.test7.dto.UserDTO;
 import org.springframework.shell.Availability;
 import org.springframework.shell.standard.*;

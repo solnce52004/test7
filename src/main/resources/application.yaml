@@ -104,4 +104,9 @@ logging:
 jwt:
   header: Authorization
   secret: authsecret
-  expiration: 604800
+#  expiration: 3600000
+#  refresh: 86400000
+
+  ## For test
+  expiration: 60000
+  refresh: 120000

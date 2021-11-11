@@ -21,10 +21,7 @@
             <form method="POST"
                   th:action="@{/upload-file-multiple}"
                   enctype="multipart/form-data">
-                <input
-                        type="hidden"
-                        th:name="${_csrf.parameterName}"
-                        th:value="${_csrf.token}" />
+
                 <span class="h4">Загрузка нескольких файлов</span>
                 <div class="form-group">
                     <input type="file"
@@ -72,10 +69,6 @@
             <form method="POST"
                   th:action="@{/users/import/excel}"
                   enctype="multipart/form-data">
-                <input
-                        type="hidden"
-                        th:name="${_csrf.parameterName}"
-                        th:value="${_csrf.token}" />
                 <div>
                     <span class="h4">Импорт пользователей в БД (загрузите файл в формате .xlsx)</span>
                 </div>
