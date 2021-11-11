@@ -12,7 +12,7 @@ version = '0.0.1-SNAPSHOT'
 sourceCompatibility = '11'
 
 bootJar {
-    mainClassName = 'dev.example.test7.config.Test7Application'
+    mainClassName = 'dev.example.config.Test7Application'
 }
 
 configurations {

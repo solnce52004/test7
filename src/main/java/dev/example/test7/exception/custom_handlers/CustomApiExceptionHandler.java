@@ -1,8 +1,8 @@
 package dev.example.test7.exception.custom_handlers;
 
-import dev.example.test7.security.exception.JwtAuthException;
+import dev.example.config.security.exception.JwtAuthException;
 import dev.example.test7.exception.custom_exceptions.ThereIsNoSuchUserException;
-import dev.example.test7.security.exception.TokenRefreshException;
+import dev.example.config.security.exception.TokenRefreshException;
 import dev.example.test7.exception.error_bodies.ErrorBody;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;

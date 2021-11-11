@@ -1,6 +1,6 @@
 package dev.example.test7.service;
 
-import dev.example.test7.config.Translator;
+import dev.example.config.application.Translator;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 

@@ -36,6 +36,9 @@ spring:
           order_inserts: true
           order_updates: true
 
+# решает ошибку ClassCastException EntityManagerHolder
+    open-in-view: false
+
 #    show-sql: true
 
 #    hibernate:

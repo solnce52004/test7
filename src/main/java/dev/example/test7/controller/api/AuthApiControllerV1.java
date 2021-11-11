@@ -1,14 +1,14 @@
 package dev.example.test7.controller.api;
 
-import dev.example.test7.security.jwt.JwtTokenProvider;
-import dev.example.test7.security.dto.AuthRequestDTO;
-import dev.example.test7.security.dto.JwtResponseDTO;
-import dev.example.test7.security.dto.TokenRefreshRequestDTO;
-import dev.example.test7.security.dto.TokenRefreshResponseDTO;
-import dev.example.test7.entity.RefreshToken;
+import dev.example.config.security.jwt.JwtTokenProvider;
+import dev.example.config.security.dto.AuthRequestDTO;
+import dev.example.config.security.dto.JwtResponseDTO;
+import dev.example.config.security.dto.TokenRefreshRequestDTO;
+import dev.example.config.security.dto.TokenRefreshResponseDTO;
+import dev.example.config.security.entity.RefreshToken;
 import dev.example.test7.entity.User;
-import dev.example.test7.security.exception.TokenRefreshException;
-import dev.example.test7.security.service.RefreshTokenService;
+import dev.example.config.security.exception.TokenRefreshException;
+import dev.example.config.security.service.RefreshTokenService;
 import dev.example.test7.service.by_entities.UserService;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;

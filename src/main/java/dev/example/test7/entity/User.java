@@ -1,8 +1,8 @@
 package dev.example.test7.entity;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
-import dev.example.test7.security.enums.Role;
-import dev.example.test7.security.enums.UserStatus;
+import dev.example.config.security.enums.Role;
+import dev.example.config.security.enums.UserStatus;
 import lombok.*;
 import org.hibernate.annotations.DynamicInsert;
 import org.hibernate.annotations.DynamicUpdate;
