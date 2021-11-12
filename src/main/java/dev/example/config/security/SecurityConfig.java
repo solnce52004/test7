@@ -13,7 +13,6 @@ import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter;
 import org.springframework.security.core.userdetails.UserDetailsService;
-import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.authentication.rememberme.JdbcTokenRepositoryImpl;
 import org.springframework.security.web.authentication.rememberme.PersistentTokenRepository;
@@ -38,16 +37,19 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
     private final UserDetailsService userDetailsService;
 //    private final RestAuthenticationEntryPoint restAuthenticationEntryPoint;
     private final DataSource dataSource;
+    private final PasswordEncoder passwordEncoder;
 
     @Autowired
     public SecurityConfig(
             JwtConfigurer jwtConfigurer,
             @Qualifier("userDetailsServiceImpl") UserDetailsService userDetailsService,
-            DataSource dataSource
+            DataSource dataSource,
+            PasswordEncoder passwordEncoder
     ) {
         this.jwtConfigurer = jwtConfigurer;
         this.userDetailsService = userDetailsService;
         this.dataSource = dataSource;
+        this.passwordEncoder = passwordEncoder;
     }
 
     @Override
@@ -85,9 +87,11 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
                         "/",
                         "/error",
                         "/index",
+                        "/auth/register",
                         "/auth/login"
                 ).permitAll()
                 .antMatchers(HttpMethod.POST, "/auth/process").permitAll()
+                .antMatchers(HttpMethod.POST, "/auth/register").permitAll()
                 .anyRequest().authenticated()
 
                 .and()
@@ -128,7 +132,7 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
     @Bean
     protected DaoAuthenticationProvider daoAuthenticationProvider() {
         final DaoAuthenticationProvider provider = new DaoAuthenticationProvider();
-        provider.setPasswordEncoder(passwordEncoder());
+        provider.setPasswordEncoder(passwordEncoder);
         provider.setUserDetailsService(userDetailsService);
         return provider;
     }
@@ -139,10 +143,10 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
         return super.authenticationManagerBean();
     }
 
-    @Bean
-    protected PasswordEncoder passwordEncoder() {
-        return new BCryptPasswordEncoder(12);
-    }
+//    @Bean
+//    protected PasswordEncoder passwordEncoder() {
+//        return new BCryptPasswordEncoder(12);
+//    }
 
     @Bean
     public PersistentTokenRepository persistentTokenRepository(){

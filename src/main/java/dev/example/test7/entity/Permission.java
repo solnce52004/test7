@@ -1,12 +1,15 @@
 package dev.example.test7.entity;
 
 import lombok.*;
+import org.hibernate.annotations.DynamicInsert;
+import org.hibernate.annotations.DynamicUpdate;
 import org.hibernate.annotations.Fetch;
 import org.hibernate.annotations.FetchMode;
-import org.hibernate.annotations.Immutable;
+import org.hibernate.validator.internal.util.stereotypes.Immutable;
 
 import javax.persistence.*;
 import java.io.Serializable;
+import java.util.HashSet;
 import java.util.Set;
 
 @Entity(name = "permissions")
@@ -14,10 +17,10 @@ import java.util.Set;
 @AllArgsConstructor
 @Getter
 @Setter
-@EqualsAndHashCode(exclude = {"id", "users", "permissions"})
-@ToString(exclude = {"users", "permissions"})
-
-@Immutable
+@EqualsAndHashCode(exclude = {"id", "roles"})
+@ToString(exclude = {"roles"})
+@DynamicUpdate
+@DynamicInsert
 
 public class Permission implements Serializable {
     private static final Long serialVersionUID = 1L;
@@ -27,14 +30,15 @@ public class Permission implements Serializable {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
+    @Immutable
     @Column(name = "title", nullable = false)
     private String title;
 
     @ManyToMany(
-            fetch = FetchType.LAZY,
+            fetch = FetchType.EAGER,
             mappedBy = "permissions",
             cascade = CascadeType.PERSIST
     )
     @Fetch(value = FetchMode.JOIN)
-    private Set<Role> permissions;
+    private Set<Role> roles = new HashSet<>();
 }

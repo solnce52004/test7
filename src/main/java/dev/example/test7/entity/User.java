@@ -57,7 +57,7 @@ public class User implements Serializable {
             inverseJoinColumns = {@JoinColumn(name = "role_id")}
     )
     @Fetch(value = FetchMode.JOIN)
-    private Set<Role> roles;
+    private Set<Role> roles = new HashSet<>();
 
     @Column(name = "status", nullable = false)
     @Enumerated(EnumType.STRING)
@@ -93,5 +93,26 @@ public class User implements Serializable {
         }
 
         return authorities;
+    }
+
+    public User(
+            String username,
+            String email,
+            String password,
+            Set<Role> roles,
+            UserStatusEnum status
+    ) {
+        this.username = username;
+        this.email = email;
+        this.password = password;
+        this.roles = roles;
+        this.status = status;
+    }
+
+    public User(String username, String email, String password, UserStatusEnum status) {
+        this.username = username;
+        this.email = email;
+        this.password = password;
+        this.status = status;
     }
 }

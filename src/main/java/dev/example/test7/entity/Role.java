@@ -5,6 +5,7 @@ import org.hibernate.annotations.DynamicInsert;
 import org.hibernate.annotations.DynamicUpdate;
 import org.hibernate.annotations.Fetch;
 import org.hibernate.annotations.FetchMode;
+import org.hibernate.validator.internal.util.stereotypes.Immutable;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 
 import javax.persistence.*;
@@ -31,12 +32,13 @@ public class Role implements Serializable {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
+    @Immutable
     @Column(name = "title", nullable = false)
     private String title;
 
     @ManyToMany(
             fetch = FetchType.LAZY,
-            cascade = CascadeType.PERSIST //не будем удалять роль при удалении юзера
+            cascade = CascadeType.PERSIST
     )
     @JoinTable(
             name = "role_permission",
@@ -44,7 +46,6 @@ public class Role implements Serializable {
             inverseJoinColumns = {@JoinColumn(name = "permission_id")}
     )
     @Fetch(value = FetchMode.JOIN)
-//    @Enumerated(EnumType.STRING)
     private Set<Permission> permissions = new HashSet<>();
 
     public Set<SimpleGrantedAuthority> getPermissionAuthorities() {

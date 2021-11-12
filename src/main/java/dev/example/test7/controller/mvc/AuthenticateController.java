@@ -35,10 +35,11 @@ public class AuthenticateController {
         return "failed";
     }
 
-    @GetMapping("/error")
-    public String error() {
-        return "redirect:/login";
-    }
+    //чтобы редиректиться на кастомную страницу с ошибкой
+//    @GetMapping("/error")
+//    public String error() {
+//        return "error";
+//    }
 
     @GetMapping("/success")
     public String success(Principal principal) {

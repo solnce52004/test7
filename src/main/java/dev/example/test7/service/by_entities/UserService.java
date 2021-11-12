@@ -12,7 +12,6 @@ import java.util.Optional;
 @Service
 @Transactional
 public class UserService implements BaseCrudService<User> {
-
     private final UserRepository userRepository;
 
     @Autowired
@@ -58,8 +57,8 @@ public class UserService implements BaseCrudService<User> {
         users.forEach(this::save);
     }
 
-    public Optional<User> findByEmail(String email){
-       return userRepository.findByEmail(email);
+    public Optional<User> findByEmail(String email) {
+        return userRepository.findByEmail(email);
     }
 
     public List<String> getAllEmails() {
