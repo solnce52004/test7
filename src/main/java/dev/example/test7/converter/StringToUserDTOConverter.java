@@ -14,7 +14,7 @@ public class StringToUserDTOConverter implements Converter<String, UserDTO> {
         return new UserDTO(
                 strings[0],
                 strings[1],
-                Boolean.parseBoolean(strings[2])
+                strings[2]
         );
     }
 

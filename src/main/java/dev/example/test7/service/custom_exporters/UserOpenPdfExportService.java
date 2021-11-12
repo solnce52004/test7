@@ -82,13 +82,13 @@ public class UserOpenPdfExportService implements BaseExporter {
         for (User user : users) {
             cell.setPhrase(new Phrase(String.valueOf(user.getId()), font));
             table.addCell(cell);
-            cell.setPhrase(new Phrase(user.getName(), font));
+            cell.setPhrase(new Phrase(user.getUsername(), font));
             table.addCell(cell);
             cell.setPhrase(new Phrase(user.getPassword(), font));
             table.addCell(cell);
             cell.setPhrase(new Phrase(user.getEmail(), font));
             table.addCell(cell);
-            cell.setPhrase(new Phrase(String.valueOf(user.getIsRememberMe()), font));
+            cell.setPhrase(new Phrase(String.valueOf(123), font));
             table.addCell(cell);
             cell.setPhrase(new Phrase(String.valueOf(user.getCreatedAt()), font));
             table.addCell(cell);

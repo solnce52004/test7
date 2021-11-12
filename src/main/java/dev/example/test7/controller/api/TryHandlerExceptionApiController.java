@@ -226,7 +226,7 @@ public class TryHandlerExceptionApiController {
             BindingResult bindingResult
     ) {
         System.out.println(bindingResult.getAllErrors());
-        return ResponseEntity.ok(user.getName());
+        return ResponseEntity.ok(user.getUsername());
     }
 
     // spring.mvc.throw-exception-if-no-handler-found=true

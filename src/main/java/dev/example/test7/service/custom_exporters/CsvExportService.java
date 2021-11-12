@@ -53,7 +53,7 @@ public class CsvExportService implements BaseExporter {
         for (User user : users) {
             dataRows = Arrays.asList(
                     String.valueOf(user.getId()),
-                    user.getName(),
+                    user.getUsername(),
                     user.getEmail()
             );
 

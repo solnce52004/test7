@@ -1,6 +1,6 @@
 package dev.example.config.security.service;
 
-import dev.example.config.security.model.SecurityUser;
+import dev.example.config.security.model.UserDetailsImpl;
 import dev.example.test7.entity.User;
 import dev.example.test7.repo.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -25,6 +25,6 @@ public class UserDetailsServiceImpl implements UserDetailsService {
                 () -> new UsernameNotFoundException("User doesn't exists")
         );
 
-        return SecurityUser.fromUser(user);
+        return UserDetailsImpl.fromUser(user);
     }
 }

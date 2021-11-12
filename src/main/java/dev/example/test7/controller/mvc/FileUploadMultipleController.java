@@ -5,7 +5,6 @@ import dev.example.test7.constant.View;
 import dev.example.test7.exception.custom_exceptions.UploadException;
 import dev.example.test7.helper.UploadFilenameFormatter;
 import dev.example.test7.service.upload.UploadService;
-import dev.example.test7.service.by_entities.UserService;
 import lombok.extern.log4j.Log4j2;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -32,13 +31,14 @@ public class FileUploadMultipleController {
 
     private final UploadService uploadService;
     private final UploadFilenameFormatter uploadFilenameFormatter;
-    private final UserService userService;
 
     @Autowired
-    public FileUploadMultipleController(UploadService uploadService, UploadFilenameFormatter uploadFilenameFormatter, UserService userService) {
+    public FileUploadMultipleController(
+            UploadService uploadService,
+            UploadFilenameFormatter uploadFilenameFormatter
+    ) {
         this.uploadService = uploadService;
         this.uploadFilenameFormatter = uploadFilenameFormatter;
-        this.userService = userService;
     }
 
     @GetMapping(Route.ROUTE_UPLOAD_MULTIPLE_INDEX)

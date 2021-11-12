@@ -39,7 +39,7 @@ public class SpringCsvViewImpl extends AbstractMyCsvView {
             users.forEach(u -> {
                 final ArrayList<String> list = new ArrayList<>();
                 list.add(String.valueOf(u.getId()));
-                list.add(u.getName());
+                list.add(u.getUsername());
                 list.add(u.getPassword());
                 list.add(u.getEmail());
 

@@ -49,9 +49,9 @@ public class JwtTokenProvider {
                 );
     }
 
-    public String createToken(String username, String role) {
+    public String createToken(String username, String password) {
         final Claims claims = Jwts.claims().setSubject(username);
-        claims.put("role", role);
+        claims.put("password", password);
 
         final Date dateNow = new Date();
         final Date dateExpiration = new Date(dateNow.getTime() + expirationInMs);

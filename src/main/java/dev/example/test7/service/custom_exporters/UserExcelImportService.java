@@ -55,7 +55,6 @@ public class UserExcelImportService implements BaseImporter {
                     final String name = row.getCell(1).getStringCellValue();
                     final String password = row.getCell(2).getStringCellValue();
                     final String email = row.getCell(3).getStringCellValue();
-                    final int isRememberMe = (int) row.getCell(4).getNumericCellValue();
 
                     // validate...
                     if (name.isEmpty() ||
@@ -66,10 +65,9 @@ public class UserExcelImportService implements BaseImporter {
                     }
 
                     final User user = new User();
-                    user.setName(name);
+                    user.setUsername(name);
                     user.setPassword(password);
                     user.setEmail(email);
-                    user.setIsRememberMe(isRememberMe);
 
                     users.add(user);
                 }

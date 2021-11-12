@@ -70,7 +70,7 @@ public class UserExcelExportService implements BaseExporter {
 
             final XSSFCell cellName = dataRow.createCell(1);
             cellName.setCellType(CellType.STRING);
-            cellName.setCellValue(value.getName());
+            cellName.setCellValue(value.getUsername());
 
             final XSSFCell cellPass = dataRow.createCell(2);
             cellPass.setCellType(CellType.STRING);
@@ -82,7 +82,7 @@ public class UserExcelExportService implements BaseExporter {
 
             final XSSFCell cellIsRem = dataRow.createCell(4);
             cellIsRem.setCellType(CellType.NUMERIC);
-            cellIsRem.setCellValue(value.getIsRememberMe());
+            cellIsRem.setCellValue(123);
 
             final XSSFCell cellCr = dataRow.createCell(5);
             cellCr.setCellValue(value.getCreatedAt());

@@ -34,7 +34,7 @@ public class UserApiController {
             produces = MediaType.APPLICATION_JSON_VALUE,
             consumes = MediaType.APPLICATION_JSON_VALUE
     )
-    @PreAuthorize("hasAuthority('writer')")
+    @PreAuthorize("hasAuthority('WRITE')")
     public ResponseEntity<User> save(@RequestBody User user) {
         final HttpHeaders headers = new HttpHeaders();
 
@@ -79,13 +79,13 @@ public class UserApiController {
 
     @ApiOperation(value = "Поиск всех пользователей по имени")
     @GetMapping(
-            path = "/names/{name}",
+            path = "/names/{username}",
             produces = MediaType.APPLICATION_JSON_VALUE
     )
     public ResponseEntity<List<User>> getAllByName(
-            @PathVariable("name") String name
+            @PathVariable("username") String username
     ) {
-        final List<User> users = userService.findAllByName(name);
+        final List<User> users = userService.findAllByName(username);
         if (users.isEmpty()) {
             return new ResponseEntity<>(HttpStatus.NOT_FOUND);
         }

@@ -13,6 +13,11 @@ import javax.servlet.http.HttpSession;
 //@SessionAttributes("user")
 public class HomeController {
 
+    @GetMapping(value = {"/", "/index"})
+    public String index() {
+        return "index";
+    }
+
     @GetMapping(Route.ROUTE_HOME)
     public String home(HttpSession session) {
         return View.VIEW_HOME;

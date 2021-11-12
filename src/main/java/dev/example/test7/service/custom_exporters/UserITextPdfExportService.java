@@ -87,7 +87,7 @@ public class UserITextPdfExportService implements BaseExporter {
                     .setFontSize(8.0f)
             );
             table.addCell(new Cell()
-                    .add(new Paragraph(user.getName()))
+                    .add(new Paragraph(user.getUsername()))
                     .setFont(font)
             );
             table.addCell(new Cell()
@@ -99,7 +99,7 @@ public class UserITextPdfExportService implements BaseExporter {
                     .setFont(font)
             );
             table.addCell(new Cell()
-                    .add(new Paragraph(String.valueOf(user.getIsRememberMe())))
+                    .add(new Paragraph(String.valueOf(123)))
                     .setFont(font)
             );
             table.addCell(new Cell()

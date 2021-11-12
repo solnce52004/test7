@@ -31,12 +31,6 @@ databaseChangeLog:
                   constraints:
                     nullable: false
               - column:
-                  name: is_remember_me
-                  type: INT
-                  defaultValue: "0"
-                  constraints:
-                    nullable: false
-              - column:
                   name: status
                   type: VARCHAR(255)
                   constraints:

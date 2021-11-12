@@ -1,6 +1,6 @@
 databaseChangeLog:
   - includeAll:
-      path: classpath:/db/changelog/init/structure
+      path: classpath:/db/changelog/init/structure/init_structure.sql
       context: dev
 #  - includeAll:
 #      path: classpath:/db/changelog/init/indexes

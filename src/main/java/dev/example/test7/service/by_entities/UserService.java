@@ -35,8 +35,8 @@ public class UserService implements BaseCrudService<User> {
         return userRepository.findAll();
     }
 
-    public List<User> findAllByName(String name) {
-        return userRepository.findAllByName(name);
+    public List<User> findAllByName(String username) {
+        return userRepository.findAllByName(username);
     }
 
     //todo:!!!!
@@ -60,5 +60,9 @@ public class UserService implements BaseCrudService<User> {
 
     public Optional<User> findByEmail(String email){
        return userRepository.findByEmail(email);
+    }
+
+    public List<String> getAllEmails() {
+        return userRepository.getAllEmails();
     }
 }

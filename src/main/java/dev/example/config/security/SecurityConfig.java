@@ -4,6 +4,7 @@ import dev.example.config.security.jwt.JwtConfigurer;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.context.annotation.Bean;
+import org.springframework.http.HttpMethod;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.dao.DaoAuthenticationProvider;
 import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
@@ -14,11 +15,20 @@ import org.springframework.security.config.annotation.web.configuration.WebSecur
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
+import org.springframework.security.web.authentication.rememberme.JdbcTokenRepositoryImpl;
+import org.springframework.security.web.authentication.rememberme.PersistentTokenRepository;
 import org.springframework.security.web.util.matcher.AntPathRequestMatcher;
+
+import javax.sql.DataSource;
 
 
 @EnableWebSecurity
-@EnableGlobalMethodSecurity(securedEnabled = true, prePostEnabled = true)// теперь доступы прописываются над методами
+@EnableGlobalMethodSecurity(
+        prePostEnabled = true,
+        securedEnabled = true,
+        jsr250Enabled = true
+)
+// теперь доступы прописываются над методами
 
 public class SecurityConfig extends WebSecurityConfigurerAdapter {
 
@@ -27,48 +37,72 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
     private final JwtConfigurer jwtConfigurer;
     private final UserDetailsService userDetailsService;
 //    private final RestAuthenticationEntryPoint restAuthenticationEntryPoint;
+    private final DataSource dataSource;
 
     @Autowired
     public SecurityConfig(
             JwtConfigurer jwtConfigurer,
-            @Qualifier("userDetailsServiceImpl") UserDetailsService userDetailsService//,
-//            @Qualifier("restAuthenticationEntryPoint") RestAuthenticationEntryPoint restAuthenticationEntryPoint
+            @Qualifier("userDetailsServiceImpl") UserDetailsService userDetailsService,
+            DataSource dataSource
     ) {
         this.jwtConfigurer = jwtConfigurer;
         this.userDetailsService = userDetailsService;
-//        this.restAuthenticationEntryPoint = restAuthenticationEntryPoint;
+        this.dataSource = dataSource;
     }
 
     @Override
     protected void configure(HttpSecurity http) throws Exception {
         http
+                //не заходит
 //                .exceptionHandling()
-//                .authenticationEntryPoint(restAuthenticationEntryPoint) //не заходит
+//                .authenticationEntryPoint(restAuthenticationEntryPoint)
 //                .and()
 
-                .csrf().disable()
-//                .sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS)
-
+                // use JWT (without formLogin!)
+                // на фронте токен хранить в local storage)
+                // при каждом ответе с фронта добавляем в хедер токен
+//                .csrf().disable()
+//                .sessionManagement()
+//                .sessionCreationPolicy(SessionCreationPolicy.STATELESS)
 //                .and()
-                .authorizeRequests()
-
-                //api
+//                .addFilter(new JWTAuthenticationFilter(authenticationManager()))
+//                .addFilter(new JWTAuthorizationFilter(authenticationManager()))
+//                .apply(jwtConfigurer)
+                // api
+//                .and()
+//                .authorizeRequests()
 //                .antMatchers("/api/v1/auth/login").permitAll()
 //                .antMatchers("/api/v1/users/*").authenticated()
 
-                //mvc
-                .antMatchers("/", "/auth/login").permitAll()
+                //mvc + session + cookie
+                .authorizeRequests()
+                .antMatchers(
+                        "/favicon.ico",
+                        "/css/**",
+                        "/js/**",
+                        "/images/**",
+
+                        "/",
+                        "/error",
+                        "/index",
+                        "/auth/login"
+                ).permitAll()
+                .antMatchers(HttpMethod.POST, "/auth/process").permitAll()
                 .anyRequest().authenticated()
 
                 .and()
                 .formLogin()
+                .usernameParameter("email") //!!!
                 .loginPage("/auth/login").permitAll()
+                .loginProcessingUrl("/auth/process").permitAll()//не заходит - это просто чтобы скрыть от пользователей системный урл обработки, сами переопределить метод не можем?
                 .defaultSuccessUrl("/auth/success")
 
                 .and()
                 .rememberMe()
                 .key("authsecret")
-                .tokenValiditySeconds(60)
+                .tokenValiditySeconds(60) //3*24*60*60
+                .userDetailsService(userDetailsService) //!!!
+                .tokenRepository(persistentTokenRepository()) //!!!
 
                 .and()
                 .anonymous()
@@ -77,36 +111,30 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
 
                 .and()
                 .logout()
-                .logoutRequestMatcher(new AntPathRequestMatcher("/auth/logout", "POST"))
+                .logoutRequestMatcher(new AntPathRequestMatcher("/auth/logout", HttpMethod.POST.name()))
                 .invalidateHttpSession(true)
                 .clearAuthentication(true)
-                .deleteCookies()
-//                .deleteCookies("JSESSIONID")
-                .logoutSuccessUrl("/auth/login")
-
-                .and()
-                .apply(jwtConfigurer);
+                .deleteCookies("JSESSIONID")
+                .deleteCookies("remember-me")
+                .logoutSuccessUrl("/auth/login");
     }
 
-    /// по идеи уже не нужно ////
     @Override
-    protected void configure(AuthenticationManagerBuilder auth) throws Exception {
+    protected void configure(AuthenticationManagerBuilder auth) {
         auth.authenticationProvider(daoAuthenticationProvider());
+//        auth.userDetailsService(userDetailsService).passwordEncoder(passwordEncoder());
     }
 
     @Bean
     protected DaoAuthenticationProvider daoAuthenticationProvider() {
         final DaoAuthenticationProvider provider = new DaoAuthenticationProvider();
-
         provider.setPasswordEncoder(passwordEncoder());
         provider.setUserDetailsService(userDetailsService);
-
         return provider;
     }
-    //////
 
+    @Bean //!!!!!
     @Override
-    @Bean
     public AuthenticationManager authenticationManagerBean() throws Exception {
         return super.authenticationManagerBean();
     }
@@ -116,6 +144,12 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
         return new BCryptPasswordEncoder(12);
     }
 
+    @Bean
+    public PersistentTokenRepository persistentTokenRepository(){
+        final JdbcTokenRepositoryImpl tokenRepository = new JdbcTokenRepositoryImpl();
+        tokenRepository.setDataSource(dataSource);
+        return tokenRepository;
+    }
 
     //    /////////////////////////////
 //    // BY DATABASE
@@ -199,13 +233,13 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
 //        final UserDetails admin = User.builder()
 //                .username("admin")
 //                .password(passwordEncoder().encode("admin"))
-//                .authorities(Role.ADMIN.getAuthorities())//SimpleGrantedAuthorities by "reader" and "writer"
+//                .authorities(RoleEnum.ADMIN.getAuthorities())//SimpleGrantedAuthorities by "reader" and "writer"
 //                .build();
 //
 //        final UserDetails user = User.builder()
 //                .username("user")
 //                .password(passwordEncoder().encode("user"))
-//                .authorities(Role.USER.getAuthorities())//SimpleGrantedAuthorities by "reader"
+//                .authorities(RoleEnum.USER.getAuthorities())//SimpleGrantedAuthorities by "reader"
 //                .build();
 //
 //        return new InMemoryUserDetailsManager(
@@ -228,9 +262,9 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
 //                .authorizeRequests()
 //                    .antMatchers("/").permitAll()
 //                // если над методом анн @PreAuthorize("hasAuthority('writer')") - то тут уже не указываем
-////                    .antMatchers(HttpMethod.GET, "/api/**").hasAuthority(Permission.READER.getPermission())//"reader"
-////                    .antMatchers(HttpMethod.POST, "/api/**").hasAuthority(Permission.WRITER.getPermission())//"writer
-////                    .antMatchers(HttpMethod.DELETE, "/api/**").hasAuthority(Permission.WRITER.getPermission())//"writer
+////                    .antMatchers(HttpMethod.GET, "/api/**").hasAuthority(PermissionEnum.READER.getPermission())//"reader"
+////                    .antMatchers(HttpMethod.POST, "/api/**").hasAuthority(PermissionEnum.WRITER.getPermission())//"writer
+////                    .antMatchers(HttpMethod.DELETE, "/api/**").hasAuthority(PermissionEnum.WRITER.getPermission())//"writer
 //                .anyRequest().authenticated()
 //                    .and()
 //                .httpBasic();
@@ -242,13 +276,13 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
 //                User.builder()
 //                    .username("admin")
 //                    .password(passwordEncoder().encode("admin"))
-//                    .authorities(Role.ADMIN.getAuthorities())//SimpleGrantedAuthorities by "reader" and "writer"
+//                    .authorities(RoleEnum.ADMIN.getAuthorities())//SimpleGrantedAuthorities by "reader" and "writer"
 //                    .build(),
 //
 //                User.builder()
 //                    .username("user")
 //                    .password(passwordEncoder().encode("user"))
-//                    .authorities(Role.USER.getAuthorities())//SimpleGrantedAuthorities by "reader"
+//                    .authorities(RoleEnum.USER.getAuthorities())//SimpleGrantedAuthorities by "reader"
 //                    .build()
 //        );
 //    }
@@ -266,9 +300,9 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
 //                .csrf().disable()
 //                .authorizeRequests()
 //                    .antMatchers("/").permitAll()
-//                    .antMatchers(HttpMethod.GET, "/api/**").hasAnyRole(Role.ADMIN.name(), Role.USER.name())
-//                    .antMatchers(HttpMethod.POST, "/api/**").hasRole(Role.ADMIN.name())
-//                    .antMatchers(HttpMethod.DELETE, "/api/**").hasRole(Role.ADMIN.name())
+//                    .antMatchers(HttpMethod.GET, "/api/**").hasAnyRole(RoleEnum.ADMIN.name(), RoleEnum.USER.name())
+//                    .antMatchers(HttpMethod.POST, "/api/**").hasRole(RoleEnum.ADMIN.name())
+//                    .antMatchers(HttpMethod.DELETE, "/api/**").hasRole(RoleEnum.ADMIN.name())
 //                .anyRequest().authenticated()
 //                    .and()
 //                .httpBasic();
@@ -280,12 +314,12 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
 //                User.builder()
 //                    .username("admin")
 //                    .password(passwordEncoder().encode("admin"))
-//                    .roles(Role.ADMIN.name())
+//                    .roles(RoleEnum.ADMIN.name())
 //                    .build(),
 //                User.builder()
 //                    .username("user")
 //                    .password(passwordEncoder().encode("user"))
-//                    .roles(Role.USER.name())
+//                    .roles(RoleEnum.USER.name())
 //                    .build()
 //        );
 //    }

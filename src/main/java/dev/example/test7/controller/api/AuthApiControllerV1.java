@@ -62,7 +62,7 @@ public class AuthApiControllerV1 {
         }
     }
 
-    private JwtResponseDTO getResponse(AuthRequestDTO requestDTO) {
+    public JwtResponseDTO getResponse(AuthRequestDTO requestDTO) {
         //auth
         final UsernamePasswordAuthenticationToken requestToken = new UsernamePasswordAuthenticationToken(
                 requestDTO.getEmail(),
@@ -78,9 +78,10 @@ public class AuthApiControllerV1 {
         final User user = userService.findByEmail(requestDTO.getEmail()).orElseThrow(
                 () -> new UsernameNotFoundException("user doesn't exists")
         );
+
         final String token = jwtTokenProvider.createToken(
                 requestDTO.getEmail(),
-                user.getRole().name()
+                requestDTO.getPassword()
         );
         RefreshToken refreshToken = refreshTokenService.createRefreshToken(user.getId());
 
@@ -89,7 +90,7 @@ public class AuthApiControllerV1 {
                 token,
                 refreshToken.getToken(),
                 user.getId(),
-                user.getName(),
+                user.getUsername(),
                 user.getEmail(),
                 authorities
         );
@@ -111,7 +112,7 @@ public class AuthApiControllerV1 {
 
         String token = jwtTokenProvider.createToken(
                 user.getEmail(),
-                user.getRole().name()
+                user.getPassword()
         );
 
         return ResponseEntity.ok(new TokenRefreshResponseDTO(token, requestRefreshToken));

@@ -1,6 +1,6 @@
 package dev.example.config.security.enums;
 
-public enum UserStatus {
+public enum UserStatusEnum {
     ACTIVE,
-    BANNED;
+    BANNED
 }
