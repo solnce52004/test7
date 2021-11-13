@@ -1,6 +1,5 @@
 package dev.example.config.security;
 
-import dev.example.config.security.jwt.JwtConfigurer;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.context.annotation.Bean;
@@ -33,20 +32,18 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
 
     /////////////////////////////
     // BY JWT TOKEN
-    private final JwtConfigurer jwtConfigurer;
-    private final UserDetailsService userDetailsService;
+//    private final JwtConfigurer jwtConfigurer;
 //    private final RestAuthenticationEntryPoint restAuthenticationEntryPoint;
     private final DataSource dataSource;
+    private final UserDetailsService userDetailsService;
     private final PasswordEncoder passwordEncoder;
 
     @Autowired
     public SecurityConfig(
-            JwtConfigurer jwtConfigurer,
             @Qualifier("userDetailsServiceImpl") UserDetailsService userDetailsService,
             DataSource dataSource,
             PasswordEncoder passwordEncoder
     ) {
-        this.jwtConfigurer = jwtConfigurer;
         this.userDetailsService = userDetailsService;
         this.dataSource = dataSource;
         this.passwordEncoder = passwordEncoder;
@@ -88,6 +85,8 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
                         "/error",
                         "/index",
                         "/auth/register",
+                        "/auth/verify/*",
+                        "/auth/resent-token/*",
                         "/auth/login"
                 ).permitAll()
                 .antMatchers(HttpMethod.POST, "/auth/process").permitAll()
@@ -124,7 +123,7 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
     }
 
     @Override
-    protected void configure(AuthenticationManagerBuilder auth) {
+    protected void configure(AuthenticationManagerBuilder auth) throws Exception {
         auth.authenticationProvider(daoAuthenticationProvider());
 //        auth.userDetailsService(userDetailsService).passwordEncoder(passwordEncoder());
     }
@@ -143,17 +142,18 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
         return super.authenticationManagerBean();
     }
 
-//    @Bean
-//    protected PasswordEncoder passwordEncoder() {
-//        return new BCryptPasswordEncoder(12);
-//    }
-
     @Bean
-    public PersistentTokenRepository persistentTokenRepository(){
+    public PersistentTokenRepository persistentTokenRepository() {
         final JdbcTokenRepositoryImpl tokenRepository = new JdbcTokenRepositoryImpl();
         tokenRepository.setDataSource(dataSource);
         return tokenRepository;
     }
+
+    //    @Bean
+//    protected PasswordEncoder passwordEncoder() {
+//        return new BCryptPasswordEncoder(12);
+//    }
+
 
     //    /////////////////////////////
 //    // BY DATABASE

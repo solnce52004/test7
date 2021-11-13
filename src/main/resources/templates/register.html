@@ -1,7 +1,7 @@
 <!DOCTYPE HTML>
 <html xmlns="http://www.w3.org/1999/xhtml"
       xmlns:th="http://www.thymeleaf.org"
-      xmlns:sec="http://www.thymeleaf.org/thymeleaf-extras-springsecurity4"
+      xmlns:sec="http://www.thymeleaf.org/thymeleaf-extras-springsecurity5"
       lang="ru">
 <head>
     <title>Регистрация</title>
@@ -73,11 +73,13 @@
                     <div class="alert alert-warning" th:if="${#fields.hasErrors('confirmPassword')}" th:errors="*{confirmPassword}"></div>
                 </div>
                 <div class="form-group">
-                    <button type="submit" class="btn btn-default"
-                            th:text="Зарегистрироваться"></button>
+                    <button type="submit" class="btn btn-default">Отправить ссылку верификации на почту</button>
                 </div>
             </form>
-
+            <hr>
+            <div th:if="*{user.getEmail()}">
+                <a th:href="@{'/auth/resent-token/' + *{user.getEmail()}}" class="btn btn-default">Повторно отправить ссылку</a>
+            </div>
         </div>
     </div>
 </div>

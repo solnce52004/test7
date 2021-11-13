@@ -8,6 +8,7 @@ import org.springframework.security.core.userdetails.UserDetails;
 
 import java.util.Collection;
 import java.util.List;
+import java.util.stream.Collectors;
 
 @Data
 public class UserDetailsImpl implements UserDetails {
@@ -17,7 +18,12 @@ public class UserDetailsImpl implements UserDetails {
     private final List<SimpleGrantedAuthority> authorities;
     private final boolean isActive;
 
-    public UserDetailsImpl(String username, String password, List<SimpleGrantedAuthority> authorities, boolean isActive) {
+    public UserDetailsImpl(
+            String username,
+            String password,
+            List<SimpleGrantedAuthority> authorities,
+            boolean isActive
+    ) {
         this.username = username;
         this.password = password;
         this.authorities = authorities;
@@ -68,6 +74,9 @@ public class UserDetailsImpl implements UserDetails {
                 user.isActive(),
                 user.isActive(),
                 user.getAuthorities()
+                        .stream()
+                        .map(SimpleGrantedAuthority::new)
+                        .collect(Collectors.toSet())
         );
     }
 }

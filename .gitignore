@@ -42,3 +42,4 @@ src/.DS_Store
 /logs/
 /uploads/
 /spring-shell.log
+/resources/application.yaml

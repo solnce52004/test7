@@ -6,13 +6,11 @@ import org.hibernate.annotations.DynamicUpdate;
 import org.hibernate.annotations.Fetch;
 import org.hibernate.annotations.FetchMode;
 import org.hibernate.validator.internal.util.stereotypes.Immutable;
-import org.springframework.security.core.authority.SimpleGrantedAuthority;
 
 import javax.persistence.*;
 import java.io.Serializable;
 import java.util.HashSet;
 import java.util.Set;
-import java.util.stream.Collectors;
 
 @Entity(name = "roles")
 @NoArgsConstructor
@@ -47,15 +45,4 @@ public class Role implements Serializable {
     )
     @Fetch(value = FetchMode.JOIN)
     private Set<Permission> permissions = new HashSet<>();
-
-    public Set<SimpleGrantedAuthority> getPermissionAuthorities() {
-        return getPermissions()
-                .stream()
-                .map(p -> new SimpleGrantedAuthority(p.getTitle()))
-                .collect(Collectors.toSet());
-    }
-
-    public SimpleGrantedAuthority getRoleAuthorities() {
-        return new SimpleGrantedAuthority(getTitle());
-    }
 }

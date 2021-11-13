@@ -67,6 +67,24 @@ public class JwtTokenProvider {
                 .compact();
     }
 
+    public String createVerifyToken(String username, String password) {
+        final Claims claims = Jwts.claims().setSubject(username);
+        claims.put("password", password);
+
+        final Date dateNow = new Date();
+        final Date dateExpiration = new Date(dateNow.getTime() + 15 * 60 * 1000);
+
+        return Jwts.builder()
+                .setClaims(claims)
+                .setIssuedAt(dateNow)
+                .setExpiration(dateExpiration)
+                .signWith(
+                        SignatureAlgorithm.HS256,
+                        secretKey
+                )
+                .compact();
+    }
+
     public boolean validateToken(String token) {
         final Jws<Claims> claimsJws;
         try {
@@ -109,7 +127,7 @@ public class JwtTokenProvider {
         );
     }
 
-    public String resolveToken(HttpServletRequest request){
+    public String resolveToken(HttpServletRequest request) {
         final String authHeader = request.getHeader(this.authHeader);
 
         if (StringUtils.hasText(authHeader) && authHeader.startsWith("Bearer ")) {

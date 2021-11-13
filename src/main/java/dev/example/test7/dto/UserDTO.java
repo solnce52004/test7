@@ -1,5 +1,6 @@
 package dev.example.test7.dto;
 
+import dev.example.config.security.enums.UserStatusEnum;
 import io.swagger.annotations.ApiModelProperty;
 import jakarta.xml.bind.annotation.XmlRootElement;
 import lombok.*;
@@ -39,6 +40,8 @@ public class UserDTO implements Serializable {
     @Size(min = 2, max = 8, message = ERROR_MSG_NOT_VALID)
     transient private String confirmPassword;
 
+    private String status = UserStatusEnum.NOT_CONFIRMED.name();
+
     public boolean isAdmin() {
         return username.equals("admin");
     }
@@ -54,14 +57,31 @@ public class UserDTO implements Serializable {
     }
 
     public UserDTO(
-            @NotBlank(message = ERROR_MSG_EMPTY_VALUE) String username,
-            @NotBlank(message = ERROR_MSG_EMPTY_VALUE) String email,
+            String username,
             @NotBlank(message = ERROR_MSG_EMPTY_VALUE)
-            @Size(min = 2, max = 8, message = ERROR_MSG_NOT_VALID) String password
+            @Email(regexp = ".*@.*\\..*", message = "Email should be valid")
+                    String email,
+            String status
+    ) {
+        this.username = username;
+        this.email = email;
+        this.status = status;
+    }
+
+    public UserDTO(
+            String username,
+            @NotBlank(message = ERROR_MSG_EMPTY_VALUE)
+            @Email(regexp = ".*@.*\\..*", message = "Email should be valid")
+                    String email,
+            @NotBlank(message = ERROR_MSG_EMPTY_VALUE)
+            @Size(min = 2, max = 8, message = ERROR_MSG_NOT_VALID)
+                    String password,
+            String status
     ) {
         this.username = username;
         this.email = email;
         this.password = password;
+        this.status = status;
     }
 
     public UserDTO(
@@ -77,11 +97,14 @@ public class UserDTO implements Serializable {
 
             @NotBlank(message = ERROR_MSG_EMPTY_VALUE)
             @Size(min = 2, max = 8, message = ERROR_MSG_NOT_VALID)
-                    String confirmPassword
+                    String confirmPassword,
+
+            String status
     ) {
         this.username = username;
         this.email = email;
         this.password = password;
         this.confirmPassword = confirmPassword;
+        this.status = status;
     }
 }

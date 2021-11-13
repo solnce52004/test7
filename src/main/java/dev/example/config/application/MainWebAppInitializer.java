@@ -42,10 +42,10 @@ public class MainWebAppInitializer implements WebApplicationInitializer {
 
     @Bean
     public MultipartConfigElement multipartConfigElement(){
-        MultipartConfigFactory factory = new MultipartConfigFactory();
-        factory.setLocation("java.io.tmpdir");
+        MultipartConfigFactory factory_dto = new MultipartConfigFactory();
+        factory_dto.setLocation("java.io.tmpdir");
 
-        return factory.createMultipartConfig();
+        return factory_dto.createMultipartConfig();
     }
 
     @Bean

@@ -22,14 +22,20 @@ CREATE TABLE `refresh_token`
 # -------- основные таблицы для РОЛЕВОЙ МОДЕЛИ ----------
 CREATE TABLE `users`
 (
-    `id` BIGINT AUTO_INCREMENT PRIMARY KEY,
+    `id` BIGINT AUTO_INCREMENT
+        PRIMARY KEY,
     `username` VARCHAR(255) DEFAULT 'guest' NOT NULL,
     `email` VARCHAR(255) NOT NULL,
     `password` VARCHAR(255) NOT NULL,
     `status` VARCHAR(255) DEFAULT 'ACTIVE' NOT NULL,
+    `verified_at` TIMESTAMP NULL,
+    `token` VARCHAR(255) NULL,
     `created_at` TIMESTAMP DEFAULT (CURRENT_TIMESTAMP) NULL,
     `updated_at` TIMESTAMP DEFAULT (CURRENT_TIMESTAMP) NULL,
-    CONSTRAINT `users_email_uindex` UNIQUE (`email`)
+    CONSTRAINT `users_email_uindex`
+        UNIQUE (`email`),
+    CONSTRAINT `users_token_uindex`
+        UNIQUE (`token`)
 )
     COMMENT 'Пользователи';
 

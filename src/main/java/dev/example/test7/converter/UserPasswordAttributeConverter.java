@@ -1,6 +1,7 @@
 package dev.example.test7.converter;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Component;
 
@@ -17,7 +18,7 @@ public class UserPasswordAttributeConverter implements AttributeConverter<String
 
     @Override
     public String convertToDatabaseColumn(String password) {
-        return passwordEncoder.encode(password);
+        return new BCryptPasswordEncoder(12).encode(password);
     }
 
     @Override

@@ -5,7 +5,6 @@ import dev.example.config.security.enums.UserStatusEnum;
 import dev.example.test7.converter.UserPasswordAttributeConverter;
 import lombok.*;
 import org.hibernate.annotations.*;
-import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.transaction.annotation.Transactional;
 
 import javax.persistence.CascadeType;
@@ -59,9 +58,18 @@ public class User implements Serializable {
     @Fetch(value = FetchMode.JOIN)
     private Set<Role> roles = new HashSet<>();
 
+//    @Enumerated(EnumType.STRING)
     @Column(name = "status", nullable = false)
-    @Enumerated(EnumType.STRING)
-    private UserStatusEnum status;
+    private String status = UserStatusEnum.NOT_CONFIRMED.name();
+
+    @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd hh:mm:ss")
+    @Temporal(TemporalType.TIMESTAMP)
+//    @org.hibernate.annotations.Generated(GenerationTime.ALWAYS)
+    @Column(name="verified_at", columnDefinition = "TIMESTAMP")
+    private Date verifiedAt;
+
+    @Column(name = "token")
+    private String token;
 
     @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd hh:mm:ss")
     @Temporal(TemporalType.TIMESTAMP)
@@ -76,20 +84,22 @@ public class User implements Serializable {
     private Date updatedAt;
 
     public boolean isActive(){
-       return getStatus().equals(UserStatusEnum.ACTIVE);
+       return getStatus().equals(UserStatusEnum.CONFIRMED);
     }
 
     /**
      * Смешанный (но уникальный) список ROLES, PERMISSIONS
-     * завернутый в SimpleGrantedAuthority
+     * для получения списка SimpleGrantedAuthority
      * сможем делать ограничения по ролям, либо по authority
      */
     @Transactional
-    public Set<SimpleGrantedAuthority> getAuthorities() {
-        Set<SimpleGrantedAuthority> authorities = new HashSet<>();
+    public Set<String> getAuthorities() {
+        Set<String> authorities = new HashSet<>();
         for (Role role : getRoles()) {
-            authorities.addAll(role.getPermissionAuthorities());
-            authorities.add(role.getRoleAuthorities());
+            authorities.add(role.getTitle());
+            for (Permission permission : role.getPermissions()) {
+                authorities.add(permission.getTitle());
+            }
         }
 
         return authorities;
@@ -100,7 +110,7 @@ public class User implements Serializable {
             String email,
             String password,
             Set<Role> roles,
-            UserStatusEnum status
+            String status
     ) {
         this.username = username;
         this.email = email;
@@ -109,7 +119,12 @@ public class User implements Serializable {
         this.status = status;
     }
 
-    public User(String username, String email, String password, UserStatusEnum status) {
+    public User(
+            String username,
+            String email,
+            String password,
+            String status
+    ) {
         this.username = username;
         this.email = email;
         this.password = password;

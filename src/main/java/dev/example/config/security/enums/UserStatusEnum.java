@@ -1,6 +1,7 @@
 package dev.example.config.security.enums;
 
 public enum UserStatusEnum {
-    ACTIVE,
+    NOT_CONFIRMED,
+    CONFIRMED,
     BANNED
 }
