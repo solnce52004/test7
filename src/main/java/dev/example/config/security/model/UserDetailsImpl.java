@@ -13,17 +13,20 @@ import java.util.stream.Collectors;
 @Data
 public class UserDetailsImpl implements UserDetails {
 
+    private final String email;
     private final String username;
     private final String password;
     private final List<SimpleGrantedAuthority> authorities;
     private final boolean isActive;
 
     public UserDetailsImpl(
+            String email,
             String username,
             String password,
             List<SimpleGrantedAuthority> authorities,
             boolean isActive
     ) {
+        this.email = email;
         this.username = username;
         this.password = password;
         this.authorities = authorities;
@@ -42,7 +45,7 @@ public class UserDetailsImpl implements UserDetails {
 
     @Override
     public String getUsername() {
-        return username;
+        return email;
     }
 
     @Override
@@ -69,10 +72,10 @@ public class UserDetailsImpl implements UserDetails {
         return new org.springframework.security.core.userdetails.User(
                 user.getEmail(),
                 user.getPassword(),
-                user.isActive(),
-                user.isActive(),
-                user.isActive(),
-                user.isActive(),
+//                user.isActive(),
+//                user.isActive(),
+//                user.isActive(),
+//                user.isActive(),
                 user.getAuthorities()
                         .stream()
                         .map(SimpleGrantedAuthority::new)

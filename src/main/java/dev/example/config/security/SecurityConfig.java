@@ -1,6 +1,6 @@
 package dev.example.config.security;
 
-import org.springframework.beans.factory.annotation.Autowired;
+import lombok.AllArgsConstructor;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.context.annotation.Bean;
 import org.springframework.http.HttpMethod;
@@ -12,6 +12,7 @@ import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter;
 import org.springframework.security.core.userdetails.UserDetailsService;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.authentication.rememberme.JdbcTokenRepositoryImpl;
 import org.springframework.security.web.authentication.rememberme.PersistentTokenRepository;
@@ -21,12 +22,12 @@ import javax.sql.DataSource;
 
 
 @EnableWebSecurity
-@EnableGlobalMethodSecurity(
+@EnableGlobalMethodSecurity(// теперь доступы прописываются над методами
         prePostEnabled = true,
         securedEnabled = true,
         jsr250Enabled = true
 )
-// теперь доступы прописываются над методами
+@AllArgsConstructor
 
 public class SecurityConfig extends WebSecurityConfigurerAdapter {
 
@@ -34,20 +35,11 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
     // BY JWT TOKEN
 //    private final JwtConfigurer jwtConfigurer;
 //    private final RestAuthenticationEntryPoint restAuthenticationEntryPoint;
-    private final DataSource dataSource;
-    private final UserDetailsService userDetailsService;
-    private final PasswordEncoder passwordEncoder;
 
-    @Autowired
-    public SecurityConfig(
-            @Qualifier("userDetailsServiceImpl") UserDetailsService userDetailsService,
-            DataSource dataSource,
-            PasswordEncoder passwordEncoder
-    ) {
-        this.userDetailsService = userDetailsService;
-        this.dataSource = dataSource;
-        this.passwordEncoder = passwordEncoder;
-    }
+    @Qualifier("userDetailsServiceImpl")
+    private final UserDetailsService userDetailsService;
+//    private final PasswordEncoder passwordEncoder;
+    private final DataSource dataSource;
 
     @Override
     protected void configure(HttpSecurity http) throws Exception {
@@ -97,7 +89,7 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
                 .formLogin()
                 .usernameParameter("email") //!!!
                 .loginPage("/auth/login").permitAll()
-                .loginProcessingUrl("/auth/process").permitAll()//не заходит - это просто чтобы скрыть от пользователей системный урл обработки, сами переопределить метод не можем?
+//                .loginProcessingUrl("/auth/process").permitAll()//не заходит - это просто чтобы скрыть от пользователей системный урл обработки, сами переопределить метод не можем?
                 .defaultSuccessUrl("/auth/success")
 
                 .and()
@@ -107,11 +99,11 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
                 .userDetailsService(userDetailsService) //!!!
                 .tokenRepository(persistentTokenRepository()) //!!!
 
-                .and()
-                .anonymous()
-                .authorities("ROLE_ANONYMOUS")
-                .principal("anonymous")
-
+//                .and()
+//                .anonymous()
+//                .authorities("ROLE_ANONYMOUS")
+//                .principal("anonymous")
+//
                 .and()
                 .logout()
                 .logoutRequestMatcher(new AntPathRequestMatcher("/auth/logout", HttpMethod.POST.name()))
@@ -131,9 +123,13 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
     @Bean
     protected DaoAuthenticationProvider daoAuthenticationProvider() {
         final DaoAuthenticationProvider provider = new DaoAuthenticationProvider();
-        provider.setPasswordEncoder(passwordEncoder);
+        provider.setPasswordEncoder(passwordEncoder());
         provider.setUserDetailsService(userDetailsService);
         return provider;
+    }
+    @Bean
+    protected PasswordEncoder passwordEncoder() {
+        return new BCryptPasswordEncoder(12);
     }
 
     @Bean //!!!!!
@@ -148,12 +144,6 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
         tokenRepository.setDataSource(dataSource);
         return tokenRepository;
     }
-
-    //    @Bean
-//    protected PasswordEncoder passwordEncoder() {
-//        return new BCryptPasswordEncoder(12);
-//    }
-
 
     //    /////////////////////////////
 //    // BY DATABASE

@@ -36,7 +36,7 @@ public class UserDTO implements Serializable {
     private String password;
 
     @ApiModelProperty(notes = "Повторный ввод пароля", required = true)
-    @NotBlank(message = ERROR_MSG_EMPTY_VALUE)
+//    @NotBlank(message = ERROR_MSG_EMPTY_VALUE)
     @Size(min = 2, max = 8, message = ERROR_MSG_NOT_VALID)
     transient private String confirmPassword;
 
@@ -47,12 +47,14 @@ public class UserDTO implements Serializable {
     }
 
     public UserDTO(
-            @NotBlank(message = ERROR_MSG_EMPTY_VALUE) String username,
+            @NotBlank(message = ERROR_MSG_EMPTY_VALUE)
+            @Email(regexp = ".*@.*\\..*", message = "Email should be valid")
+                    String email,
             @NotBlank(message = ERROR_MSG_EMPTY_VALUE)
             @Size(min = 2, max = 8, message = ERROR_MSG_NOT_VALID)
                     String password
     ) {
-        this.username = username;
+        this.email = email;
         this.password = password;
     }
 

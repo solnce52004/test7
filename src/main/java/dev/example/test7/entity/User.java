@@ -84,7 +84,7 @@ public class User implements Serializable {
     private Date updatedAt;
 
     public boolean isActive(){
-       return getStatus().equals(UserStatusEnum.CONFIRMED);
+       return true;
     }
 
     /**

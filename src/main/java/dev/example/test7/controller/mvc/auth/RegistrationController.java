@@ -1,4 +1,4 @@
-package dev.example.test7.controller.mvc;
+package dev.example.test7.controller.mvc.auth;
 
 
 import dev.example.test7.dto.UserDTO;
@@ -33,7 +33,7 @@ public class RegistrationController {
     @GetMapping("/register")
     public String registerPage(Model model) {
         if (!model.containsAttribute("user")) {
-            model.addAttribute("user", new UserDTO("", ""));
+            model.addAttribute("user", new UserDTO());
         }
         return "register";
     }
