@@ -35,6 +35,9 @@ public class RegistrationController {
         if (!model.containsAttribute("user")) {
             model.addAttribute("user", new UserDTO());
         }
+        if (!model.containsAttribute("errors")) {
+            model.addAttribute("errors", new ArrayList<>());
+        }
         return "register";
     }
 

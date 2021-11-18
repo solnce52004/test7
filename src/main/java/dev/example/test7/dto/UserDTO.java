@@ -1,5 +1,6 @@
 package dev.example.test7.dto;
 
+import dev.example.config.security.enums.ProviderEnum;
 import dev.example.config.security.enums.UserStatusEnum;
 import io.swagger.annotations.ApiModelProperty;
 import jakarta.xml.bind.annotation.XmlRootElement;
@@ -41,6 +42,7 @@ public class UserDTO implements Serializable {
     transient private String confirmPassword;
 
     private String status = UserStatusEnum.NOT_CONFIRMED.name();
+    private String provider = ProviderEnum.LOCAL.name();
 
     public boolean isAdmin() {
         return username.equals("admin");

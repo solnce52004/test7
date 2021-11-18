@@ -68,7 +68,13 @@ public class RegisterUserService {
                 .orElse(null);
 
         if (user == null) {
-            throw new SecurityException("user is not exists: " + email);
+            throw new SecurityException("user is not exists: "
+                    + email
+                    + ". Заполните форму регистрации, Вы не зарегистрированы");
+        } else if (user.getVerifiedAt() != null) {
+            throw new SecurityException("Пользователь с указанным email "
+                    + email
+                    + " уже заргистрирован");
         }
 
         user.setToken(
@@ -89,12 +95,13 @@ public class RegisterUserService {
         final String email = jwtTokenProvider.getUsername(token);
         final User user = userService.findByEmail(email).orElse(null);
 
-        if (user == null || !user.getToken().equals(token)) {
+        if (user == null ||
+                (user.getVerifiedAt() == null && !user.getToken().equals(token))
+        ) {
             throw new SecurityException("user is not exists with email: " + email);
         }
 
-        if (!user.getStatus().equals(UserStatusEnum.NOT_CONFIRMED.name()) ||
-                user.getVerifiedAt() != null) {
+        if (user.getVerifiedAt() != null) {
             throw new SecurityException("user is already verified");
         }
 

@@ -1,5 +1,8 @@
 package dev.example.config.security;
 
+import dev.example.config.security.handler.OAuth2AuthenticationFailureHandler;
+import dev.example.config.security.handler.OAuth2AuthenticationSuccessHandler;
+import dev.example.config.security.service.OAuth2UserServiceImpl;
 import lombok.AllArgsConstructor;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.context.annotation.Bean;
@@ -14,9 +17,14 @@ import org.springframework.security.config.annotation.web.configuration.WebSecur
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
+import org.springframework.security.oauth2.client.registration.ClientRegistrationRepository;
+import org.springframework.security.oauth2.client.web.OAuth2AuthorizedClientRepository;
+import org.springframework.security.oauth2.client.web.reactive.function.client.ServletOAuth2AuthorizedClientExchangeFilterFunction;
+import org.springframework.security.web.authentication.SimpleUrlAuthenticationFailureHandler;
 import org.springframework.security.web.authentication.rememberme.JdbcTokenRepositoryImpl;
 import org.springframework.security.web.authentication.rememberme.PersistentTokenRepository;
 import org.springframework.security.web.util.matcher.AntPathRequestMatcher;
+import org.springframework.web.reactive.function.client.WebClient;
 
 import javax.sql.DataSource;
 
@@ -38,15 +46,22 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
 
     @Qualifier("userDetailsServiceImpl")
     private final UserDetailsService userDetailsService;
-//    private final PasswordEncoder passwordEncoder;
     private final DataSource dataSource;
+    private final OAuth2AuthenticationSuccessHandler oAuth2AuthenticationSuccessHandler;
+    private final OAuth2AuthenticationFailureHandler oAuth2AuthenticationFailureHandler;
+    private final OAuth2UserServiceImpl oAuth2UserServiceImpl;
 
     @Override
     protected void configure(HttpSecurity http) throws Exception {
+        SimpleUrlAuthenticationFailureHandler handler = new SimpleUrlAuthenticationFailureHandler("/");
+
         http
                 //не заходит
 //                .exceptionHandling()
 //                .authenticationEntryPoint(restAuthenticationEntryPoint)
+//                .exceptionHandling(e -> e
+//                        .authenticationEntryPoint(new HttpStatusEntryPoint(HttpStatus.UNAUTHORIZED))
+//                )
 //                .and()
 
                 // use JWT (without formLogin!)
@@ -66,6 +81,9 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
 //                .antMatchers("/api/v1/users/*").authenticated()
 
                 //mvc + session + cookie
+
+                .cors()
+                .and()
                 .authorizeRequests()
                 .antMatchers(
                         "/favicon.ico",
@@ -79,7 +97,8 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
                         "/auth/register",
                         "/auth/verify/*",
                         "/auth/resent-token/*",
-                        "/auth/login"
+                        "/auth/login",
+                        "/oauth2/**"
                 ).permitAll()
                 .antMatchers(HttpMethod.POST, "/auth/process").permitAll()
                 .antMatchers(HttpMethod.POST, "/auth/register").permitAll()
@@ -93,17 +112,26 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
                 .defaultSuccessUrl("/auth/success")
 
                 .and()
+                .oauth2Login(o -> o
+                                .loginPage("/auth/login")
+                                .userInfoEndpoint()
+                                .userService(oAuth2UserServiceImpl)
+                                .and()
+                                .successHandler(oAuth2AuthenticationSuccessHandler)
+//                                .failureHandler((request, response, exception) -> {
+//                                    request.getSession().setAttribute("error.message", exception.getMessage());
+//                                    handler.onAuthenticationFailure(request, response, exception);
+//                                })
+                                .failureHandler(oAuth2AuthenticationFailureHandler)
+                )
+
+//                .and()
                 .rememberMe()
                 .key("authsecret")
                 .tokenValiditySeconds(60) //3*24*60*60
                 .userDetailsService(userDetailsService) //!!!
                 .tokenRepository(persistentTokenRepository()) //!!!
 
-//                .and()
-//                .anonymous()
-//                .authorities("ROLE_ANONYMOUS")
-//                .principal("anonymous")
-//
                 .and()
                 .logout()
                 .logoutRequestMatcher(new AntPathRequestMatcher("/auth/logout", HttpMethod.POST.name()))
@@ -127,6 +155,7 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
         provider.setUserDetailsService(userDetailsService);
         return provider;
     }
+
     @Bean
     protected PasswordEncoder passwordEncoder() {
         return new BCryptPasswordEncoder(12);
@@ -144,6 +173,55 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
         tokenRepository.setDataSource(dataSource);
         return tokenRepository;
     }
+
+    //////
+    @Bean
+    public WebClient rest(
+            ClientRegistrationRepository clients,
+            OAuth2AuthorizedClientRepository authz
+    ) {
+        ServletOAuth2AuthorizedClientExchangeFilterFunction oauth2 =
+                new ServletOAuth2AuthorizedClientExchangeFilterFunction(clients, authz);
+
+        return WebClient
+                .builder()
+                .filter(oauth2)
+                .build();
+    }
+
+//    @Bean
+//    public OAuth2UserService<OAuth2UserRequest, OAuth2User> oauth2UserService(WebClient rest) {
+//
+//        return request -> {
+//            OAuth2User user = oAuth2UserServiceImpl.loadUser(request);
+//
+//            if (!"google".equals(request.getClientRegistration().getRegistrationId())) {
+//                return user;
+//            }
+//
+//            OAuth2AuthorizedClient client = new OAuth2AuthorizedClient(
+//                    request.getClientRegistration(),
+//                    user.getName(),
+//                    request.getAccessToken()
+//            );
+//            String url = user.getAttribute("organizations_url");
+//
+//            List<Map<String, Object>> orgs = rest
+//                    .get()
+//                    .uri(url)
+//                    .attributes(oauth2AuthorizedClient(client))
+//                    .retrieve()
+//                    .bodyToMono(List.class)
+//                    .block();
+//
+//            if (orgs != null &&
+//                    orgs.stream().anyMatch(org -> "spring-projects".equals(org.get("login")))) {
+//                return user;
+//            }
+//
+//            throw new OAuth2AuthenticationException(new OAuth2Error("invalid_token", "Not in Spring Team", ""));
+//        };
+//    }
 
     //    /////////////////////////////
 //    // BY DATABASE

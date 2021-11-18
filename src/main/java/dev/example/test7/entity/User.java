@@ -40,7 +40,7 @@ public class User implements Serializable {
     @Column(name = "email", nullable = false)
     private String email;
 
-    @Column(name = "password", nullable = false)
+    @Column(name = "password")
     @Convert(converter = UserPasswordAttributeConverter.class)
     private String password;
 
@@ -70,6 +70,9 @@ public class User implements Serializable {
 
     @Column(name = "token")
     private String token;
+
+    @Column(name = "provider")
+    private String provider;
 
     @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd hh:mm:ss")
     @Temporal(TemporalType.TIMESTAMP)

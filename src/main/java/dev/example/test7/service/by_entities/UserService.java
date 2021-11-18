@@ -96,7 +96,7 @@ public class UserService implements BaseCrudService<User> {
     }
 
     @Transactional
-    public void createUserRead(User user) {
+    public User createUserRead(User user) {
         Permission permission = permissionService.getPermissionByTitle(PermissionEnum.READ.name());
         Set<Permission> permissions = new HashSet<>();
         permissions.add(permission);
@@ -109,5 +109,7 @@ public class UserService implements BaseCrudService<User> {
 
         user.setRoles(roles);
         save(user);
+
+        return user;
     }
 }

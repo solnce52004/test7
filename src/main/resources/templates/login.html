@@ -6,7 +6,7 @@
 <!--th:with="lang=${#locale.language}" th:lang="${lang}"-->
 <head>
     <title>Login</title>
-<!--    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8"/>-->
+    <!--    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8"/>-->
     <meta charset="UTF-8">
 </head>
 <link
@@ -15,9 +15,9 @@
         rel="stylesheet"
         th:href="@{/css/style.css}">
 <link rel="stylesheet"
-        href="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/3.3.7/css/bootstrap.min.css"/>
+      href="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/3.3.7/css/bootstrap.min.css"/>
 <link rel="stylesheet"
-        href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css"/>
+      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css"/>
 
 <body>
 <div th:if="${param.logout}">
@@ -35,47 +35,61 @@
                     <a th:href="@{'?lang=ru'}">ru</a>
                     <a th:href="@{'?lang=en'}">en</a>
                 </div>
-                    <div class="form-group">
-                        <input type="email"
-                               class="form-control"
-                               name="email"
-                               th:placeholder="#{login_page.form.placeholder.email}"
-                               th:field="*{email}">
-                        <i class="fa fa-user"></i>
-                        <br/>
-                        <div class="alert alert-warning"
-                             th:if="${#fields.hasErrors('email')}"
-                             th:errors="*{email}"></div>
+                <div class="form-group">
+                    <input type="email"
+                           class="form-control"
+                           name="email"
+                           th:placeholder="#{login_page.form.placeholder.email}"
+                           th:field="*{email}">
+                    <i class="fa fa-user"></i>
+                    <br/>
+                    <div class="alert alert-warning"
+                         th:if="${#fields.hasErrors('email')}"
+                         th:errors="*{email}"></div>
+                </div>
+                <div class="form-group help">
+                    <input type="password"
+                           class="form-control"
+                           name="password"
+                           th:placeholder="#{login_page.form.placeholder.user_password}"
+                           th:field="*{password}">
+                    <i class="fa fa-lock"></i>
+                    <a href="#" class="fa fa-question-circle"></a>
+                    <br/>
+                    <div class="alert alert-warning"
+                         th:if="${#fields.hasErrors('password')}"
+                         th:errors="*{password}"></div>
+                </div>
+                <div class="form-group">
+                    <div class="main-checkbox">
+                        <input type="checkbox"
+                               th:checked="checked" id="isRememberMe" name="remember-me"/>
+                        <label for="isRememberMe"></label>
                     </div>
-                    <div class="form-group help">
-                        <input type="password"
-                               class="form-control"
-                               name="password"
-                               th:placeholder="#{login_page.form.placeholder.user_password}"
-                               th:field="*{password}">
-                        <i class="fa fa-lock"></i>
-                        <a href="#" class="fa fa-question-circle"></a>
-                        <br/>
-                        <div class="alert alert-warning"
-                             th:if="${#fields.hasErrors('password')}"
-                             th:errors="*{password}"></div>
-                    </div>
-                    <div class="form-group">
-                        <div class="main-checkbox">
-                            <input type="checkbox"
-                                   th:checked="checked" id="isRememberMe" name="remember-me"/>
-                            <label for="isRememberMe"></label>
-                        </div>
-                        <span class="text"
-                              th:text="#{login_page.form.title_remember_me}"></span>
-                        <button type="submit" class="btn btn-default"
-                        th:text="#{login_page.form.title_enter}"></button>
-                    </div>
+                    <span class="text"
+                          th:text="#{login_page.form.title_remember_me}"></span>
+                    <button type="submit" class="btn btn-default"
+                            th:text="#{login_page.form.title_enter}"></button>
+                </div>
             </form>
+            <div th:if="${!errors.isEmpty()}"
+                 th:each="error : ${errors}">
+                <div class="alert alert-warning" th:text="*{error}"></div>
+            </div>
+
+            <div class="row">
+                <div class="col-md-offset-3 col-md-6">
+                    <a th:href="@{'/auth/register'}">Регистрация</a>
+                <br/>
+                    <a th:href="@{'/oauth2/authorization/google'}">Войти через Гугл</a>
+                <br/>
+                    <a th:href="@{'/oauth2/authorization/github'}">Войти через GitHub</a>
+                </div>
+            </div>
         </div>
     </div>
-<!--    <p th:text="'Hello, ' + ${user.getEmail()} + '!'"/>-->
-<!--    <p th:text="'You password: ' + ${user.getPassword()} + '!'"/>-->
+    <!--    <p th:text="'Hello, ' + ${user.getEmail()} + '!'"/>-->
+    <!--    <p th:text="'You password: ' + ${user.getPassword()} + '!'"/>-->
 </div>
 <!--    <script src="js/application.js"></script>-->
 </body>

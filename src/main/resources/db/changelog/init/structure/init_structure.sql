@@ -26,10 +26,11 @@ CREATE TABLE `users`
         PRIMARY KEY,
     `username` VARCHAR(255) DEFAULT 'guest' NOT NULL,
     `email` VARCHAR(255) NOT NULL,
-    `password` VARCHAR(255) NOT NULL,
+    `password` VARCHAR(255) NULL,
     `status` VARCHAR(255) DEFAULT 'ACTIVE' NOT NULL,
     `verified_at` TIMESTAMP NULL,
     `token` VARCHAR(255) NULL,
+    `provider` VARCHAR(50) NULL,
     `created_at` TIMESTAMP DEFAULT (CURRENT_TIMESTAMP) NULL,
     `updated_at` TIMESTAMP DEFAULT (CURRENT_TIMESTAMP) NULL,
     CONSTRAINT `users_email_uindex`
