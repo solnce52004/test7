@@ -48,22 +48,6 @@ public class OAuth2AuthenticationSuccessHandler implements AuthenticationSuccess
             throw new InternalAuthenticationServiceException(ex.getMessage(), ex.getCause());
         }
 
-//
-//        User user = userService.findByEmail(principal.getEmail()).orElse(null);
-//
-//        if (user == null) {
-//            user = new User();
-//            user.setUsername(principal.getName());
-//            user.setEmail(principal.getEmail());
-//            user.setProvider(provider);
-//            userService.createUserRead(user);
-//
-//        } else if (user.getProvider() == null || !user.getProvider().equals(provider)) {
-//            user.setProvider(provider);
-////        user.setProvider(ProviderEnum.GOOGLE.name());
-//            userService.update(user);
-//        }
-
         response.sendRedirect("/auth/success");
     }
 
@@ -86,26 +70,27 @@ public class OAuth2AuthenticationSuccessHandler implements AuthenticationSuccess
         user.setProvider(registrationId);
 
         if (userOptional.isPresent()) {
-            user = updateExistingUser(user, oAuth2UserInfo);
-        } else if (oAuth2UserInfo.getName() != null) {
-            user = registerNewUser(user, oAuth2UserInfo);
+            updateExistingUser(user, oAuth2UserInfo);
+        } else if (oAuth2UserInfo.getName() != null &&
+                (oAuth2UserInfo.getEmail() == null || !oAuth2UserInfo.getEmail().equalsIgnoreCase(registrationId))) {
+            registerNewUser(user, oAuth2UserInfo);
         }
     }
 
-    private User updateExistingUser(
+    private void updateExistingUser(
             User existingUser,
             OAuth2UserInfo oAuth2UserInfo
     ) {
         existingUser.setUsername(oAuth2UserInfo.getName());
-        return userService.update(existingUser);
+        userService.update(existingUser);
     }
 
-    private User registerNewUser(
+    private void registerNewUser(
             User user,
             OAuth2UserInfo oAuth2UserInfo
     ) {
         user.setUsername(oAuth2UserInfo.getName());
         user.setEmail(oAuth2UserInfo.getEmail());
-        return userService.createUserRead(user);
+        userService.createUserRead(user);
     }
 }

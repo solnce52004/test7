@@ -27,7 +27,7 @@ import org.springframework.security.web.util.matcher.AntPathRequestMatcher;
 import org.springframework.web.reactive.function.client.WebClient;
 
 import javax.sql.DataSource;
-
+//import static org.springframework.security.oauth2.client.web.reactive.function.client.ServletOAuth2AuthorizedClientExchangeFilterFunction.oauth2AuthorizedClient;
 
 @EnableWebSecurity
 @EnableGlobalMethodSecurity(// теперь доступы прописываются над методами
@@ -118,14 +118,9 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
                                 .userService(oAuth2UserServiceImpl)
                                 .and()
                                 .successHandler(oAuth2AuthenticationSuccessHandler)
-//                                .failureHandler((request, response, exception) -> {
-//                                    request.getSession().setAttribute("error.message", exception.getMessage());
-//                                    handler.onAuthenticationFailure(request, response, exception);
-//                                })
                                 .failureHandler(oAuth2AuthenticationFailureHandler)
                 )
 
-//                .and()
                 .rememberMe()
                 .key("authsecret")
                 .tokenValiditySeconds(60) //3*24*60*60
@@ -189,6 +184,8 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
                 .build();
     }
 
+    //официальный гайд
+    //не работает - сюда даже не заходит при выполнении
 //    @Bean
 //    public OAuth2UserService<OAuth2UserRequest, OAuth2User> oauth2UserService(WebClient rest) {
 //
