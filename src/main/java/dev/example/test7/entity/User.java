@@ -1,6 +1,7 @@
 package dev.example.test7.entity;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
+import dev.example.config.security.enums.ProviderEnum;
 import dev.example.config.security.enums.UserStatusEnum;
 import dev.example.test7.converter.UserPasswordAttributeConverter;
 import lombok.*;
@@ -72,7 +73,10 @@ public class User implements Serializable {
     private String token;
 
     @Column(name = "provider")
-    private String provider;
+    private String provider = ProviderEnum.LOCAL.name();
+
+    @Column(name = "reset_token")
+    private String resetToken;
 
     @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd hh:mm:ss")
     @Temporal(TemporalType.TIMESTAMP)

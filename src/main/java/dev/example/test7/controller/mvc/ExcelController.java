@@ -80,7 +80,7 @@ public class ExcelController {
 
         redirectAttributes.addFlashAttribute("errorsImportExcel", new ArrayList<>());
 
-        final RedirectView redirectView = new RedirectView(Route.ROUTE_UPLOAD_MULTIPLE_INDEX);
+        final RedirectView redirectView = new RedirectView(Route.UPLOAD_MULTIPLE_INDEX);
         redirectView.setStatusCode(HttpStatus.MOVED_PERMANENTLY);
 
         final ModelAndView mav = new ModelAndView();
@@ -101,6 +101,6 @@ public class ExcelController {
         errors.add(e.getMessage());
         redirectAttributes.addFlashAttribute("errorsImportExcel", errors);
 
-        return "redirect:" + Route.ROUTE_UPLOAD_MULTIPLE_INDEX;
+        return Route.REDIRECT_UPLOAD_MULTIPLE_INDEX;
     }
 }

@@ -31,6 +31,7 @@ CREATE TABLE `users`
     `verified_at` TIMESTAMP NULL,
     `token` VARCHAR(255) NULL,
     `provider` VARCHAR(50) NULL,
+    `reset_token` VARCHAR(255) NULL,
     `created_at` TIMESTAMP DEFAULT (CURRENT_TIMESTAMP) NULL,
     `updated_at` TIMESTAMP DEFAULT (CURRENT_TIMESTAMP) NULL,
     CONSTRAINT `users_email_uindex`

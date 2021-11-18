@@ -133,6 +133,6 @@ public class PdfController {
         errors.add(e.getMessage());
         redirectAttributes.addFlashAttribute("errorsImportPdf", errors);
 
-        return "redirect:" + Route.ROUTE_UPLOAD_MULTIPLE_INDEX;
+        return Route.REDIRECT_UPLOAD_MULTIPLE_INDEX;
     }
 }

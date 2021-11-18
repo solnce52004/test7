@@ -33,4 +33,18 @@ public final class UserDTOFactory {
                 user.getStatus()
         );
     }
+    public static UserDTO userToUserDTOSendResetPassword(User user) {
+        return new UserDTO(
+                user.getEmail()
+        );
+    }
+    public static UserDTO userToUserDTOResetPassword(User user) {
+        return new UserDTO(
+                user.getUsername(),
+                user.getEmail(),
+                user.getPassword(),
+                user.getConfirmPassword(),
+                user.getStatus()
+        );
+    }
 }

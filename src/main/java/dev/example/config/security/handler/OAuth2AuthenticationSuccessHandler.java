@@ -3,6 +3,7 @@ package dev.example.config.security.handler;
 import dev.example.config.security.exception.OAuth2AuthenticationProcessingException;
 import dev.example.config.security.factory.OAuth2UserInfoFactory;
 import dev.example.config.security.model.OAuth2UserInfo;
+import dev.example.test7.constant.Route;
 import dev.example.test7.entity.User;
 import dev.example.test7.service.by_entities.UserService;
 import org.springframework.security.authentication.InternalAuthenticationServiceException;
@@ -48,7 +49,7 @@ public class OAuth2AuthenticationSuccessHandler implements AuthenticationSuccess
             throw new InternalAuthenticationServiceException(ex.getMessage(), ex.getCause());
         }
 
-        response.sendRedirect("/auth/success");
+        response.sendRedirect(Route.AUTH_SUCCESS);
     }
 
     private void processOAuth2User(

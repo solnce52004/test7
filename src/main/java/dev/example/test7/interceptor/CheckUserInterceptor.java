@@ -8,6 +8,9 @@ import org.springframework.web.servlet.ModelAndView;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+/**
+ * просто тестовый пример
+ */
 public class CheckUserInterceptor implements HandlerInterceptor {
 
     @Override
@@ -18,7 +21,7 @@ public class CheckUserInterceptor implements HandlerInterceptor {
             ModelAndView mav
     ) throws Exception {
 
-        if (request.getRequestURI().contains(Route.ROUTE_CHECK_USER)) {
+        if (request.getRequestURI().contains(Route.CHECK_USER)) {
 
             final UserDTO user = (UserDTO) mav.getModel().get("user");
 
@@ -26,7 +29,7 @@ public class CheckUserInterceptor implements HandlerInterceptor {
                     user.getUsername().length() > 0 &&
                     !user.isAdmin()
             ) {
-                response.sendRedirect(request.getContextPath() + Route.ROUTE_FAILED);
+                response.sendRedirect(request.getContextPath() + Route.FAILED);
             }
         }
     }

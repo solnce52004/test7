@@ -27,7 +27,7 @@
     <div class="row">
         <div class="col-md-offset-3 col-md-6">
             <form class="form-horizontal"
-                  th:action="@{/auth/process}"
+                  th:action="@{/auth/login}"
                   th:object="${user}"
                   method="post">
                 <span class="heading" th:text="#{login_page.form.title_auth}"></span>
@@ -79,9 +79,9 @@
 
             <div class="row">
                 <div class="col-md-offset-3 col-md-6">
-                    <a th:href="@{'/auth/reset-password'}">Забыли пароль?</a>
+                    <a th:href="@{'/auth/send-reset-password'}">Забыли пароль?</a>
                 <br/>
-                    <a th:href="@{'/auth/register'}">Зарегистрироваться</a>
+                    <a th:href="@{'/auth/registration'}">Зарегистрироваться</a>
                 <br/>
                     <a th:href="@{'/oauth2/authorization/google'}">Войти через Google</a>
                 <br/>

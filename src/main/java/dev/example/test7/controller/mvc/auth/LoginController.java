@@ -1,6 +1,7 @@
 package dev.example.test7.controller.mvc.auth;
 
-import dev.example.config.security.service.SecurityService;
+import dev.example.config.security.service.AuthenticationServiceImpl;
+import dev.example.test7.constant.Route;
 import dev.example.test7.dto.UserDTO;
 import lombok.AllArgsConstructor;
 import lombok.extern.log4j.Log4j2;
@@ -19,20 +20,19 @@ import java.security.Principal;
 import java.util.ArrayList;
 
 @Controller
-@RequestMapping("/auth")
+@RequestMapping(Route.AUTH)
 @Log4j2
 @AllArgsConstructor
 
-public class AuthenticateController {
-    private final SecurityService securityService;
+public class LoginController {
+    private final AuthenticationServiceImpl authenticationService;
 
-    //!!!!
-    @GetMapping("/login")
+    @GetMapping(Route.LOGIN)
     public String loginPage(
             Model model
     ) {
-        if (securityService.isAuthenticated()) {
-            return "redirect:/auth/success";
+        if (authenticationService.isAuthenticated()) {
+            return Route.REDIRECT_AUTH_SUCCESS;
         }
 
         if (!model.containsAttribute("user")) {
@@ -52,7 +52,8 @@ public class AuthenticateController {
     // с которой пользователь пришел.
     // Он не будет передавать запрос в Spring MVC и ваш контроллер.
 
-    @PostMapping("/process")
+    @PostMapping(Route.AUTH_LOGIN)
+//    @PostMapping("/process")
     public ModelAndView checkUser(
             @Valid @ModelAttribute("user") UserDTO user,
             BindingResult bindingResult,
@@ -62,13 +63,13 @@ public class AuthenticateController {
 
         if (bindingResult.hasErrors()) {
             redirectAttributes.addFlashAttribute("org.springframework.validation.BindingResult.user", bindingResult);
-            route = "/auth/login";
+            route = Route.AUTH_LOGIN;
         } else {
-            securityService.autoLogin(
+            authenticationService.autoLogin(
                     user.getEmail(),
                     user.getPassword()
             );
-            route = "/auth/success";
+            route = Route.AUTH_SUCCESS;
         }
 
         redirectAttributes.addFlashAttribute("user", user);
@@ -80,19 +81,13 @@ public class AuthenticateController {
         return mav;
     }
 
-    @GetMapping("/failed")
+    @GetMapping(Route.FAILED)
     public String failed() {
         return "failed";
     }
 
-    @GetMapping("/success")
+    @GetMapping(Route.SUCCESS)
     public String success(Principal principal) {
-//
-//        final UserDetails userDetails = (UserDetails) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
-//
-//        log.info(principal.getName());
-//        log.info(userDetails.getAuthorities());
-
         return "success";
     }
 
@@ -113,7 +108,7 @@ public class AuthenticateController {
         errors.add(e.getMessage());
         //TODO
         redirectAttributes.addFlashAttribute("errors", errors);
-        return "redirect:/auth/login";
+        return Route.REDIRECT_AUTH_LOGIN;
     }
 
     @ExceptionHandler(UsernameNotFoundException.class)
@@ -126,6 +121,6 @@ public class AuthenticateController {
         errors.add(e.getMessage());
         //TODO
         redirectAttributes.addFlashAttribute("errors", errors);
-        return "redirect:/auth/login";
+        return Route.REDIRECT_AUTH_LOGIN;
     }
 }

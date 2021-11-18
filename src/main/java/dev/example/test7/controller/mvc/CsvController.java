@@ -82,7 +82,7 @@ public class CsvController {
         //TODO
 //        redirectAttributes.addFlashAttribute("errorsCsv", errors);
 
-        return "redirect:" + Route.ROUTE_UPLOAD_MULTIPLE_INDEX;
+        return Route.REDIRECT_UPLOAD_MULTIPLE_INDEX;
     }
 
     //Можно перехватить тут ошибки доступа
@@ -102,6 +102,6 @@ public class CsvController {
 //        redirectAttributes.addFlashAttribute("errorsCsv", errors);
         redirectAttributes.addFlashAttribute("errors", errors);
 
-        return "redirect:" + Route.ROUTE_UPLOAD_MULTIPLE_INDEX;
+        return Route.REDIRECT_UPLOAD_MULTIPLE_INDEX;
     }
 }

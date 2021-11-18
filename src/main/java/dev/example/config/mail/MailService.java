@@ -1,7 +1,5 @@
 package dev.example.config.mail;
 
-import dev.example.config.security.jwt.JwtTokenProvider;
-import dev.example.test7.entity.User;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.mail.SimpleMailMessage;
@@ -14,15 +12,12 @@ public class MailService {
     private String username;
 
     private final JavaMailSender javaMailSender;
-    private final JwtTokenProvider jwtTokenProvider;
 
     @Autowired
     public MailService(
-            JavaMailSender javaMailSender,
-            JwtTokenProvider jwtTokenProvider
+            JavaMailSender javaMailSender
     ) {
         this.javaMailSender = javaMailSender;
-        this.jwtTokenProvider = jwtTokenProvider;
     }
 
     public void send(
@@ -35,6 +30,7 @@ public class MailService {
         message.setTo(to);
         message.setSubject(subject);
         message.setText(msg);
+
         javaMailSender.send(message);
     }
 }

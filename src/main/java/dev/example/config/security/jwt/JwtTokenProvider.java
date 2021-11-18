@@ -85,7 +85,7 @@ public class JwtTokenProvider {
                 .compact();
     }
 
-    public boolean validateToken(String token) {
+    public boolean validateToken(String token) throws JwtAuthException {
         final Jws<Claims> claimsJws;
         try {
             claimsJws = Jwts.parser()

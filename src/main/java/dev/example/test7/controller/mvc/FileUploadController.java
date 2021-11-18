@@ -31,7 +31,7 @@ public class FileUploadController {
     }
 
 
-    @GetMapping(Route.ROUTE_UPLOAD_INDEX)
+    @GetMapping(Route.UPLOAD_INDEX)
     public String uploadIndex(Model model) {
 
         if (!model.containsAttribute("file")) {
@@ -59,7 +59,7 @@ public class FileUploadController {
     }
 
     @PostMapping(
-            path = Route.ROUTE_UPLOAD_FILE,
+            path = Route.UPLOAD_FILE,
             consumes = MediaType.MULTIPART_FORM_DATA_VALUE
     )
     public ModelAndView uploadFile(
@@ -104,6 +104,6 @@ public class FileUploadController {
         errors.add(e.getMessage());
         redirectAttributes.addFlashAttribute("errors", errors);
 
-        return "redirect:" + Route.ROUTE_UPLOAD_INDEX;
+        return Route.REDIRECT_UPLOAD_INDEX;
     }
 }

@@ -28,7 +28,7 @@ public class FileUploadApiController {
     }
 
     @PostMapping(
-            path = Route.ROUTE_UPLOAD_FILE_MULTIPLE,
+            path = Route.UPLOAD_FILE_MULTIPLE,
             consumes = MediaType.MULTIPART_FORM_DATA_VALUE,
             produces = MediaType.APPLICATION_JSON_VALUE
     )

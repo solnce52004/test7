@@ -1,5 +1,6 @@
 package dev.example.config.security.handler;
 
+import dev.example.test7.constant.Route;
 import org.springframework.security.core.AuthenticationException;
 import org.springframework.security.web.authentication.SimpleUrlAuthenticationFailureHandler;
 import org.springframework.stereotype.Component;
@@ -15,6 +16,6 @@ public class OAuth2AuthenticationFailureHandler extends SimpleUrlAuthenticationF
     @Override
     public void onAuthenticationFailure(HttpServletRequest request, HttpServletResponse response, AuthenticationException exception) throws IOException, ServletException {
 
-        getRedirectStrategy().sendRedirect(request, response, "/auth/login");
+        getRedirectStrategy().sendRedirect(request, response, Route.AUTH_LOGIN);
     }
 }

@@ -3,6 +3,7 @@ package dev.example.config.security;
 import dev.example.config.security.handler.OAuth2AuthenticationFailureHandler;
 import dev.example.config.security.handler.OAuth2AuthenticationSuccessHandler;
 import dev.example.config.security.service.OAuth2UserServiceImpl;
+import dev.example.test7.constant.Route;
 import lombok.AllArgsConstructor;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.context.annotation.Bean;
@@ -94,26 +95,24 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
                         "/",
                         "/error",
                         "/index",
-                        "/auth/register",
-                        "/auth/verify/*",
-                        "/auth/resent-token/*",
-                        "/auth/login",
+                        "/auth/**",
                         "/oauth2/**"
                 ).permitAll()
-                .antMatchers(HttpMethod.POST, "/auth/process").permitAll()
-                .antMatchers(HttpMethod.POST, "/auth/register").permitAll()
+                .antMatchers(HttpMethod.POST, Route.AUTH_LOGIN).permitAll()
+//                .antMatchers(HttpMethod.POST, "/auth/process").permitAll()
+                .antMatchers(HttpMethod.POST, Route.AUTH_REGISTRATION).permitAll()
                 .anyRequest().authenticated()
 
                 .and()
                 .formLogin()
                 .usernameParameter("email") //!!!
-                .loginPage("/auth/login").permitAll()
+                .loginPage(Route.AUTH_LOGIN).permitAll()
 //                .loginProcessingUrl("/auth/process").permitAll()//не заходит - это просто чтобы скрыть от пользователей системный урл обработки, сами переопределить метод не можем?
-                .defaultSuccessUrl("/auth/success")
+                .defaultSuccessUrl(Route.AUTH_SUCCESS)
 
                 .and()
                 .oauth2Login(o -> o
-                                .loginPage("/auth/login")
+                                .loginPage(Route.AUTH_LOGIN)
                                 .userInfoEndpoint()
                                 .userService(oAuth2UserServiceImpl)
                                 .and()
@@ -134,7 +133,7 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
                 .clearAuthentication(true)
                 .deleteCookies("JSESSIONID")
                 .deleteCookies("remember-me")
-                .logoutSuccessUrl("/auth/login");
+                .logoutSuccessUrl(Route.AUTH_LOGIN);
     }
 
     @Override
@@ -240,8 +239,8 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
 //
 //                .and()
 //                .formLogin()
-//                .loginPage("/auth/login").permitAll()
-//                .defaultSuccessUrl("/auth/success")
+//                .loginPage(Route.AUTH_LOGIN).permitAll()
+//                .defaultSuccessUrl(Route.AUTH_SUCCESS)
 //
 //                .and()
 //                .logout()
@@ -249,7 +248,7 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
 //                .invalidateHttpSession(true)
 //                .clearAuthentication(true)
 //                .deleteCookies("JSESSIONID")
-//                .logoutSuccessUrl("/auth/login");
+//                .logoutSuccessUrl(Route.AUTH_LOGIN);
 //    }
 //
 //    @Override
@@ -284,8 +283,8 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
 //
 //                .and()
 //                .formLogin()
-//                .loginPage("/auth/login").permitAll()
-//                .defaultSuccessUrl("/auth/success")
+//                .loginPage(Route.AUTH_LOGIN).permitAll()
+//                .defaultSuccessUrl(Route.AUTH_SUCCESS)
 //
 //                .and()
 //                .logout()
@@ -293,7 +292,7 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
 //                .invalidateHttpSession(true)
 //                .clearAuthentication(true)
 //                .deleteCookies("JSESSIONID")
-//                .logoutSuccessUrl("/auth/login");
+//                .logoutSuccessUrl(Route.AUTH_LOGIN);
 //    }
 //
 //    @Bean

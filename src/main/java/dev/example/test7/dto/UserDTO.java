@@ -39,13 +39,22 @@ public class UserDTO implements Serializable {
     @ApiModelProperty(notes = "Повторный ввод пароля", required = true)
 //    @NotBlank(message = ERROR_MSG_EMPTY_VALUE)
     @Size(min = 2, max = 8, message = ERROR_MSG_NOT_VALID)
-    transient private String confirmPassword;
+    private String confirmPassword;
 
     private String status = UserStatusEnum.NOT_CONFIRMED.name();
     private String provider = ProviderEnum.LOCAL.name();
+    private String resetToken;
 
     public boolean isAdmin() {
         return username.equals("admin");
+    }
+
+    public UserDTO(
+            @NotBlank(message = ERROR_MSG_EMPTY_VALUE)
+            @Email(regexp = ".*@.*\\..*", message = "Email should be valid")
+                    String email
+    ) {
+        this.email = email;
     }
 
     public UserDTO(

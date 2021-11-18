@@ -34,8 +34,8 @@ public class UserService implements BaseCrudService<User> {
     }
 
     @Override
-    public void save(User obj) {
-        userRepository.save(obj);
+    public User save(User obj) {
+        return userRepository.save(obj);
     }
 
     @Override
@@ -80,7 +80,7 @@ public class UserService implements BaseCrudService<User> {
     }
 
     @Transactional
-    public void createAnonymousRead(User user) {
+    public User createAnonymousRead(User user) {
         Permission permission = permissionService.getPermissionByTitle(PermissionEnum.READ.name());
         Set<Permission> permissions = new HashSet<>();
         permissions.add(permission);
@@ -92,7 +92,8 @@ public class UserService implements BaseCrudService<User> {
         roles.add(role);
 
         user.setRoles(roles);
-        save(user);
+
+        return save(user);
     }
 
     @Transactional
@@ -108,8 +109,7 @@ public class UserService implements BaseCrudService<User> {
         roles.add(role);
 
         user.setRoles(roles);
-        save(user);
 
-        return user;
+        return save(user);
     }
 }

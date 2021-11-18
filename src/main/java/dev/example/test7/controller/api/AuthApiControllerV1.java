@@ -1,14 +1,15 @@
 package dev.example.test7.controller.api;
 
-import dev.example.config.security.jwt.JwtTokenProvider;
 import dev.example.config.security.dto.AuthRequestDTO;
 import dev.example.config.security.dto.JwtResponseDTO;
 import dev.example.config.security.dto.TokenRefreshRequestDTO;
 import dev.example.config.security.dto.TokenRefreshResponseDTO;
 import dev.example.config.security.entity.RefreshToken;
-import dev.example.test7.entity.User;
 import dev.example.config.security.exception.TokenRefreshException;
+import dev.example.config.security.jwt.JwtTokenProvider;
 import dev.example.config.security.service.RefreshTokenService;
+import dev.example.test7.constant.Route;
+import dev.example.test7.entity.User;
 import dev.example.test7.service.by_entities.UserService;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -52,7 +53,7 @@ public class AuthApiControllerV1 {
         this.refreshTokenService = refreshTokenService;
     }
 
-    @PostMapping("/login")
+    @PostMapping(Route.LOGIN)
     public ResponseEntity<?> login(@RequestBody AuthRequestDTO requestDTO) {
         try {
             return ResponseEntity.ok(getResponse(requestDTO));

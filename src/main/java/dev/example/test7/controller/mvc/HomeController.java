@@ -18,7 +18,7 @@ public class HomeController {
         return "index";
     }
 
-    @GetMapping(Route.ROUTE_HOME)
+    @GetMapping(Route.HOME)
     public String home(HttpSession session) {
         return View.VIEW_HOME;
     }

@@ -1,8 +1,9 @@
 package dev.example.test7.exception.custom_handlers;
 
 import dev.example.config.security.exception.JwtAuthException;
-import dev.example.test7.exception.custom_exceptions.ThereIsNoSuchUserException;
 import dev.example.config.security.exception.TokenRefreshException;
+import dev.example.test7.exception.custom_exceptions.ThereIsNoSuchUserException;
+import dev.example.test7.exception.custom_exceptions.UploadException;
 import dev.example.test7.exception.error_bodies.ErrorBody;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -57,5 +58,18 @@ public class CustomApiExceptionHandler {
                 .setDebugMessage(ex.getMessage());
 
         return new ResponseEntity<>(errors, HttpStatus.FORBIDDEN);
+    }
+
+    @ExceptionHandler(UploadException.class)
+    public ResponseEntity<Object> uploadExceptionHandler(
+            UploadException e
+    ) {
+        ErrorBody errors = new ErrorBody()
+                .setTimestamp(LocalDateTime.now())
+                .setStatus(HttpStatus.BAD_REQUEST.value())
+                .setCustomMessage("*** uploadExceptionHandler ***: " + e.getMessage())
+                .setDebugMessage(e.getMessage());
+
+        return new ResponseEntity<>(errors, HttpStatus.BAD_REQUEST);
     }
 }

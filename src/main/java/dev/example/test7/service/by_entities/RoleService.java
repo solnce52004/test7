@@ -1,7 +1,6 @@
 package dev.example.test7.service.by_entities;
 
 import dev.example.test7.entity.Role;
-import dev.example.test7.entity.User;
 import dev.example.test7.repo.RoleRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -22,8 +21,8 @@ public class RoleService implements BaseCrudService<Role> {
     }
 
     @Override
-    public void save(Role obj) {
-        roleRepository.save(obj);
+    public Role save(Role obj) {
+       return roleRepository.save(obj);
     }
 
     @Override
@@ -37,7 +36,7 @@ public class RoleService implements BaseCrudService<Role> {
     }
 
     @Override
-    public User update(Role obj) {
+    public Role update(Role obj) {
         return null;
     }
 

@@ -15,7 +15,7 @@ import org.springframework.stereotype.Service;
 @AllArgsConstructor
 @Log4j2
 
-public class SecurityServiceImpl implements SecurityService{
+public class AuthenticationServiceImpl implements AuthenticationService {
 
     private final AuthenticationManager authenticationManager;
     private final UserDetailsService userDetailsService;
@@ -23,22 +23,35 @@ public class SecurityServiceImpl implements SecurityService{
     @Override
     public boolean isAuthenticated() {
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
-        if (authentication == null || AnonymousAuthenticationToken.class.
-                isAssignableFrom(authentication.getClass())) {
+
+        if (authentication == null ||
+                AnonymousAuthenticationToken.class
+                        .isAssignableFrom(authentication.getClass())) {
             return false;
         }
         return authentication.isAuthenticated();
     }
 
     @Override
-    public void autoLogin(String email, String password) {
+    public void autoLogin(
+            String email,
+            String password
+    ) {
         UserDetails userDetails = userDetailsService.loadUserByUsername(email);
-        UsernamePasswordAuthenticationToken usernamePasswordAuthenticationToken = new UsernamePasswordAuthenticationToken(userDetails, password, userDetails.getAuthorities());
+        UsernamePasswordAuthenticationToken usernamePasswordAuthenticationToken = new UsernamePasswordAuthenticationToken(
+                userDetails,
+                password,
+                userDetails.getAuthorities()
+        );
 
         authenticationManager.authenticate(usernamePasswordAuthenticationToken);
 
         if (usernamePasswordAuthenticationToken.isAuthenticated()) {
-            SecurityContextHolder.getContext().setAuthentication(usernamePasswordAuthenticationToken);
+
+            SecurityContextHolder
+                    .getContext()
+                    .setAuthentication(usernamePasswordAuthenticationToken);
+
             log.debug(String.format("Auto login %s successfully!", email));
         }
     }

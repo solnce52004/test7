@@ -41,7 +41,7 @@ public class FileUploadMultipleController {
         this.uploadFilenameFormatter = uploadFilenameFormatter;
     }
 
-    @GetMapping(Route.ROUTE_UPLOAD_MULTIPLE_INDEX)
+    @GetMapping(Route.UPLOAD_MULTIPLE_INDEX)
     public String uploadMultipleIndex(Model model) {
 
         if (!model.containsAttribute("file")) {
@@ -90,7 +90,7 @@ public class FileUploadMultipleController {
     }
 
     @PostMapping(
-            path = Route.ROUTE_UPLOAD_FILE_MULTIPLE,
+            path = Route.UPLOAD_FILE_MULTIPLE,
             consumes = MediaType.MULTIPART_FORM_DATA_VALUE
     )
     public ModelAndView uploadFileMultiple(
@@ -118,7 +118,7 @@ public class FileUploadMultipleController {
         redirectAttributes.addFlashAttribute("uploadedFiles", uploadedFiles);
         redirectAttributes.addFlashAttribute("errors", new ArrayList<>());
 
-        final RedirectView redirectView = new RedirectView(Route.ROUTE_UPLOAD_MULTIPLE_INDEX);
+        final RedirectView redirectView = new RedirectView(Route.UPLOAD_MULTIPLE_INDEX);
         redirectView.setStatusCode(HttpStatus.MOVED_PERMANENTLY);
 
         final ModelAndView mav = new ModelAndView();
@@ -170,6 +170,6 @@ public class FileUploadMultipleController {
         errors.add(e.getMessage());
         redirectAttributes.addFlashAttribute("errors", errors);
 
-        return "redirect:" + Route.ROUTE_UPLOAD_MULTIPLE_INDEX;
+        return Route.REDIRECT_UPLOAD_MULTIPLE_INDEX;
     }
 }
