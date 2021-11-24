@@ -1,6 +1,7 @@
 package dev.example.test7.entity;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import dev.example.config.security.enums.ProviderEnum;
 import dev.example.config.security.enums.UserStatusEnum;
 import dev.example.test7.converter.UserPasswordAttributeConverter;
@@ -41,10 +42,12 @@ public class User implements Serializable {
     @Column(name = "email", nullable = false)
     private String email;
 
+    @JsonIgnore
     @Column(name = "password")
     @Convert(converter = UserPasswordAttributeConverter.class)
     private String password;
 
+    @JsonIgnore
     transient private String confirmPassword;
 
     @ManyToMany(
@@ -69,12 +72,14 @@ public class User implements Serializable {
     @Column(name="verified_at", columnDefinition = "TIMESTAMP")
     private Date verifiedAt;
 
+    @JsonIgnore
     @Column(name = "token")
     private String token;
 
     @Column(name = "provider")
     private String provider = ProviderEnum.LOCAL.name();
 
+    @JsonIgnore
     @Column(name = "reset_token")
     private String resetToken;
 

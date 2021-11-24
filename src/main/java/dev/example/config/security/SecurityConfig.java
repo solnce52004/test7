@@ -2,6 +2,7 @@ package dev.example.config.security;
 
 import dev.example.config.security.handler.OAuth2AuthenticationFailureHandler;
 import dev.example.config.security.handler.OAuth2AuthenticationSuccessHandler;
+import dev.example.config.security.jwt.JwtConfigurer;
 import dev.example.config.security.service.OAuth2UserServiceImpl;
 import dev.example.test7.constant.Route;
 import lombok.AllArgsConstructor;
@@ -15,6 +16,7 @@ import org.springframework.security.config.annotation.method.configuration.Enabl
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter;
+import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
@@ -42,7 +44,7 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
 
     /////////////////////////////
     // BY JWT TOKEN
-//    private final JwtConfigurer jwtConfigurer;
+    private final JwtConfigurer jwtConfigurer;
 //    private final RestAuthenticationEntryPoint restAuthenticationEntryPoint;
 
     @Qualifier("userDetailsServiceImpl")
@@ -68,18 +70,19 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
                 // use JWT (without formLogin!)
                 // на фронте токен хранить в local storage)
                 // при каждом ответе с фронта добавляем в хедер токен
-//                .csrf().disable()
-//                .sessionManagement()
-//                .sessionCreationPolicy(SessionCreationPolicy.STATELESS)
-//                .and()
+                .csrf().disable()
+                .sessionManagement()
+                .sessionCreationPolicy(SessionCreationPolicy.STATELESS)
+                .and()
 //                .addFilter(new JWTAuthenticationFilter(authenticationManager()))
 //                .addFilter(new JWTAuthorizationFilter(authenticationManager()))
-//                .apply(jwtConfigurer)
-                // api
-//                .and()
-//                .authorizeRequests()
-//                .antMatchers("/api/v1/auth/login").permitAll()
-//                .antMatchers("/api/v1/users/*").authenticated()
+                .apply(jwtConfigurer)
+                 //api
+                .and()
+                .authorizeRequests()
+                .antMatchers("/api/v1/auth/login").permitAll()
+                .antMatchers("/api/v1/users/*").authenticated()
+                .and()
 
                 //mvc + session + cookie
 

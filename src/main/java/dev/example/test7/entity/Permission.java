@@ -1,5 +1,6 @@
 package dev.example.test7.entity;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import lombok.*;
 import org.hibernate.annotations.DynamicInsert;
 import org.hibernate.annotations.DynamicUpdate;
@@ -34,8 +35,9 @@ public class Permission implements Serializable {
     @Column(name = "title", nullable = false)
     private String title;
 
+    @JsonIgnore
     @ManyToMany(
-            fetch = FetchType.EAGER,
+            fetch = FetchType.LAZY,
             mappedBy = "permissions",
             cascade = CascadeType.PERSIST
     )

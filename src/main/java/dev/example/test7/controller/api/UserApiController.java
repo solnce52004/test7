@@ -1,5 +1,6 @@
 package dev.example.test7.controller.api;
 
+import dev.example.test7.annotation.auth.PreAuthorityByRoleReader;
 import dev.example.test7.entity.User;
 import dev.example.test7.service.by_entities.UserService;
 import io.swagger.annotations.Api;
@@ -67,7 +68,7 @@ public class UserApiController {
 
     @ApiOperation(value = "Поиск всех пользователей")
     @GetMapping(produces = MediaType.APPLICATION_JSON_VALUE)
-    @PreAuthorize("hasAuthority('reader')")
+    @PreAuthorityByRoleReader
     public ResponseEntity<List<User>> getAll() {
         final List<User> users = userService.findAll();
         if (users.isEmpty()) {
