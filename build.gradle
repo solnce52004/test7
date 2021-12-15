@@ -39,8 +39,8 @@ dependencies {
     implementation 'org.springframework.boot:spring-boot-starter-oauth2-client'
 //    implementation 'org.springframework.security.oauth.boot:spring-security-oauth2-autoconfigure'
 
-    //webflux
-    implementation 'org.springframework.boot:spring-boot-starter-webflux'
+//    //webflux
+//    implementation 'org.springframework.boot:spring-boot-starter-webflux'
 
     //mail
     implementation 'org.springframework.boot:spring-boot-starter-mail'

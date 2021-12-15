@@ -43,3 +43,4 @@ src/.DS_Store
 /uploads/
 /spring-shell.log
 /resources/application.yaml
+/src/main/resources/ssl/

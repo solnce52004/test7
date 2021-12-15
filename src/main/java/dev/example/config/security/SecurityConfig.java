@@ -20,14 +20,10 @@ import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
-import org.springframework.security.oauth2.client.registration.ClientRegistrationRepository;
-import org.springframework.security.oauth2.client.web.OAuth2AuthorizedClientRepository;
-import org.springframework.security.oauth2.client.web.reactive.function.client.ServletOAuth2AuthorizedClientExchangeFilterFunction;
 import org.springframework.security.web.authentication.SimpleUrlAuthenticationFailureHandler;
 import org.springframework.security.web.authentication.rememberme.JdbcTokenRepositoryImpl;
 import org.springframework.security.web.authentication.rememberme.PersistentTokenRepository;
 import org.springframework.security.web.util.matcher.AntPathRequestMatcher;
-import org.springframework.web.reactive.function.client.WebClient;
 
 import javax.sql.DataSource;
 //import static org.springframework.security.oauth2.client.web.reactive.function.client.ServletOAuth2AuthorizedClientExchangeFilterFunction.oauth2AuthorizedClient;
@@ -172,19 +168,19 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
     }
 
     //////
-    @Bean
-    public WebClient rest(
-            ClientRegistrationRepository clients,
-            OAuth2AuthorizedClientRepository authz
-    ) {
-        ServletOAuth2AuthorizedClientExchangeFilterFunction oauth2 =
-                new ServletOAuth2AuthorizedClientExchangeFilterFunction(clients, authz);
-
-        return WebClient
-                .builder()
-                .filter(oauth2)
-                .build();
-    }
+//    @Bean
+//    public WebClient rest(
+//            ClientRegistrationRepository clients,
+//            OAuth2AuthorizedClientRepository authz
+//    ) {
+//        ServletOAuth2AuthorizedClientExchangeFilterFunction oauth2 =
+//                new ServletOAuth2AuthorizedClientExchangeFilterFunction(clients, authz);
+//
+//        return WebClient
+//                .builder()
+//                .filter(oauth2)
+//                .build();
+//    }
 
     //официальный гайд
     //не работает - сюда даже не заходит при выполнении
